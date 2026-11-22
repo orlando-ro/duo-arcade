@@ -93,6 +93,61 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SEO & Informational Guide Section */}
+      <section
+        aria-labelledby="how-it-works-title"
+        className="mt-12 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/70 p-6 sm:p-8 space-y-6"
+      >
+        <div>
+          <h2
+            id="how-it-works-title"
+            className="text-lg sm:text-xl font-bold text-slate-900 dark:text-zinc-100"
+          >
+            ¿Cómo jugar en DuoArcade con amigos o en solitario?
+          </h2>
+          <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-zinc-300 leading-relaxed">
+            DuoArcade reúne los mejores juegos clásicos de estrategia y
+            habilidad para partidas rápidas de entre 1 y 3 minutos. Todas las
+            partidas funcionan directamente en el navegador de tu teléfono,
+            tablet o computadora sin instalar nada.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3 text-xs sm:text-sm">
+          <div className="rounded-xl border border-slate-100 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/50 p-4">
+            <h3 className="font-bold text-slate-900 dark:text-zinc-100">
+              1. Modo Individual (vs IA)
+            </h3>
+            <p className="mt-1.5 text-slate-600 dark:text-zinc-400 leading-relaxed">
+              Entrena tus tácticas contra un bot que analiza amenazas de línea,
+              recuerda cartas volteadas y busca cerrar cajas automáticamente.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-slate-100 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/50 p-4">
+            <h3 className="font-bold text-slate-900 dark:text-zinc-100">
+              2. Modo 2 Jugadores Local
+            </h3>
+            <p className="mt-1.5 text-slate-600 dark:text-zinc-400 leading-relaxed">
+              Perfecto cuando estás junto a un amigo. Jueguen por turnos en la
+              misma pantalla, con pantallas intermedias ocultas en juegos de
+              elección secreta.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-slate-100 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/50 p-4">
+            <h3 className="font-bold text-slate-900 dark:text-zinc-100">
+              3. Modo 2 Jugadores Remoto
+            </h3>
+            <p className="mt-1.5 text-slate-600 dark:text-zinc-400 leading-relaxed">
+              Crea una sala con un clic, copia el enlace único y envíalo por
+              WhatsApp o Discord. Tu rival entrará directo a tu tablero en
+              tiempo real.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Bottom Ad Slot */}
       <div className="mt-10">
         <AdSlot format="leaderboard" className="hidden sm:flex" />

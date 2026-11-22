@@ -297,11 +297,48 @@ export function GameShell({
           <AdSlot format="rectangle" />
           <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/70 p-4 text-xs text-slate-600 dark:text-zinc-400">
             <h2 className="font-semibold text-slate-900 dark:text-zinc-100 mb-1.5">
-              ¿Cómo jugar?
+              Resumen rápido
             </h2>
             <p className="leading-relaxed">{game.description}</p>
           </div>
         </aside>
+      </div>
+
+      {/* SEO & AdSense Content Section: Rules and Strategy */}
+      <section
+        aria-labelledby="rules-strategy-heading"
+        className="mt-8 grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/70 p-5 sm:p-6 md:grid-cols-2"
+      >
+        <div>
+          <h2
+            id="rules-strategy-heading"
+            className="text-base font-bold text-slate-900 dark:text-zinc-100"
+          >
+            Reglas de {game.title}
+          </h2>
+          <ul className="mt-3 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-zinc-300 leading-relaxed list-disc pl-5">
+            {game.rules.map((rule, idx) => (
+              <li key={idx}>{rule}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="text-base font-bold text-slate-900 dark:text-zinc-100">
+            Consejos y estrategia
+          </h2>
+          <ul className="mt-3 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-zinc-300 leading-relaxed list-disc pl-5">
+            {game.tips.map((tip, idx) => (
+              <li key={idx}>{tip}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Bottom Ad Slot */}
+      <div className="mt-8">
+        <AdSlot format="leaderboard" className="hidden sm:flex" />
+        <AdSlot format="mobile-banner" className="flex sm:hidden" />
       </div>
 
       {/* Native <dialog> Share Room Modal */}

@@ -67,6 +67,12 @@ export default function RootLayout({
                 Juegos
               </Link>
               <Link
+                href="/contacto"
+                className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              >
+                Acerca de
+              </Link>
+              <Link
                 href="/privacidad"
                 className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors hidden sm:inline"
               >
@@ -81,7 +87,10 @@ export default function RootLayout({
         <footer className="border-t border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 py-6 text-center text-xs text-slate-500 dark:text-zinc-400">
           <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 sm:flex-row">
             <p>© 2026 DuoArcade. Juega al instante.</p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/contacto" className="hover:underline">
+                Acerca de y Contacto
+              </Link>
               <Link href="/privacidad" className="hover:underline">
                 Política de Privacidad
               </Link>
@@ -91,6 +100,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        <Script src="/_vercel/insights/script.js" strategy="afterInteractive" />
       </body>
     </html>
   );

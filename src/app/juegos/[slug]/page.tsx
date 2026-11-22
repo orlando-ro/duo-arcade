@@ -5,6 +5,8 @@ import { GAMES, getGameBySlug } from "@/lib/games";
 import { TicTacToeGame } from "@/components/games/TicTacToeGame";
 import { ConnectFourGame } from "@/components/games/ConnectFourGame";
 import { RockPaperScissorsGame } from "@/components/games/RockPaperScissorsGame";
+import { MemoryGame } from "@/components/games/MemoryGame";
+import { DotsAndBoxesGame } from "@/components/games/DotsAndBoxesGame";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -40,6 +42,10 @@ export default async function GamePage({ params }: PageProps) {
         return <ConnectFourGame />;
       case "piedra-papel-tijera":
         return <RockPaperScissorsGame />;
+      case "memoria":
+        return <MemoryGame />;
+      case "puntos-y-cajas":
+        return <DotsAndBoxesGame />;
       default:
         notFound();
     }
