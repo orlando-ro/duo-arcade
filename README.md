@@ -1,45 +1,24 @@
-# DuoArcade — Web App de Juegos 1 o 2 Jugadores (Vercel + Supabase + AdSense)
+# DuoArcade
 
-Aplicación web construida con **Next.js (App Router)**, **TypeScript**, **Tailwind CSS** y **Supabase Realtime**.
+**DuoArcade** es una aplicación web de minijuegos rápidos para **1 o 2 jugadores**, diseñada para jugar al instante desde el navegador sin registros ni descargas.
 
-## Características
-- **3 juegos incluidos:**
-  - **Gato (Tres en Raya)** (`1P vs IA`, `2P Local`, `2P Remoto`)
-  - **Conecta 4** (`1P vs IA`, `2P Local`, `2P Remoto`)
-  - **Piedra, Papel o Tijera** (`1P vs IA`, `2P Local` con pantalla oculta, `2P Remoto` con elección secreta simultánea)
-- **Multijugador remoto sin base de datos:** usa **Supabase Realtime (Broadcast + Presence)** mediante enlaces compartibles (`?sala=XXXXXX`).
-  - *Modo Demo automático:* si aún no configuras Supabase, el modo remoto funciona entre 2 pestañas del mismo navegador usando `BroadcastChannel` para que puedas probarlo al instante.
-- **Espacios listos para monetización (`<AdSlot />`):**
-  - Banner superior/inferior (`leaderboard` en desktop / `mobile-banner` en móvil)
-  - Bloque lateral `300x250` (`rectangle`) en cada juego
-  - Anuncio post-partida (`interstitial`) al terminar una ronda
-  - Páginas legales (`/privacidad` y `/terminos`) requeridas para aprobación de Google AdSense.
+🔗 **Demo en vivo:** https://duo-arcade-pearl.vercel.app
 
-## Desarrollo local
-```bash
-npm install --ignore-scripts
-npm run dev
-```
+## Juegos incluidos
 
-## Configurar Multijugador Remoto (Supabase)
-1. Crea un proyecto gratuito en [supabase.com](https://supabase.com).
-2. Ve a **Project Settings → API** y copia `Project URL` y `anon public key`.
-3. Crea un archivo `.env.local` basado en `.env.example`:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
-   ```
-   *(No necesitas crear ninguna tabla SQL; Realtime Broadcast y Presence funcionan directo.)*
+- **Gato (Tres en Raya):** tablero clásico 3×3 con marcador de victorias y empates.
+- **Conecta 4:** tablero 7×6 con detección de línea ganadora en horizontal, vertical y diagonal.
+- **Piedra, Papel o Tijera:** duelo al mejor de 5 rondas con pantalla oculta en modo local y elección secreta simultánea en modo remoto.
 
-## Configurar Anuncios (Google AdSense)
-1. Agrega tu ID de editor en `.env.local` (y en Vercel Environment Variables):
-   ```env
-   NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX
-   ```
-2. Pasa el `slotId` correspondiente en los componentes `<AdSlot format="..." slotId="1234567890" />`.
+## Modos de juego
 
-## Despliegue en Vercel
-1. Sube este repositorio a GitHub.
-2. Impórtalo en [vercel.com](https://vercel.com).
-3. Añade las variables de entorno (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_ADSENSE_CLIENT`) en **Settings → Environment Variables**.
-4. Haz clic en **Deploy**.
+- **1 Jugador:** partida rápida contra la IA.
+- **2 Jugadores Local:** juego por turnos en un mismo dispositivo.
+- **2 Jugadores Remoto:** salas en tiempo real mediante enlace compartible (`?sala=CODIGO`).
+
+## Stack tecnológico
+
+- **Framework:** Next.js (App Router) + TypeScript
+- **Estilos:** Tailwind CSS
+- **Tiempo real:** Supabase Realtime (Broadcast & Presence)
+- **Despliegue:** Vercel
