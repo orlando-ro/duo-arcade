@@ -36,12 +36,15 @@ export default function RootLayout({
       <head>
         <meta name="color-scheme" content="light dark" />
         {adsenseClient ? (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
+          <>
+            <meta name="google-adsense-account" content={adsenseClient} />
+            <Script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+              crossOrigin="anonymous"
+              strategy="afterInteractive"
+            />
+          </>
         ) : null}
       </head>
       <body className="min-h-full flex flex-col">
