@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  --bg-light: #f8fafc;
+  --bg-dark: #09090b;
+  --fg-light: #0f172a;
+  --fg-dark: #f4f4f5;
+  --surface-light: #ffffff;
+  --surface-dark: #18181b;
+  --border-light: #e2e8f0;
+  --border-dark: #27272a;
+  --accent-light: #4f46e5;
+  --accent-dark: #818cf8;
+
+  --background: var(--bg-light);
+  --foreground: var(--fg-light);
+  --surface: var(--surface-light);
+  --border-color: var(--border-light);
+  --accent: var(--accent-light);
+
+  @media (prefers-color-scheme: dark) {
+    --background: var(--bg-dark);
+    --foreground: var(--fg-dark);
+    --surface: var(--surface-dark);
+    --border-color: var(--border-dark);
+    --accent: var(--accent-dark);
+  }
+
+  @supports (color: light-dark(white, black)) {
+    --background: light-dark(var(--bg-light), var(--bg-dark));
+    --foreground: light-dark(var(--fg-light), var(--fg-dark));
+    --surface: light-dark(var(--surface-light), var(--surface-dark));
+    --border-color: light-dark(var(--border-light), var(--border-dark));
+    --accent: light-dark(var(--accent-light), var(--accent-dark));
+  }
+
+  color-scheme: light dark;
+  accent-color: var(--accent);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* Native <dialog> modal scroll containment (modern-web-guidance) */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
