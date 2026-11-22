@@ -1,24 +1,20 @@
 # DuoArcade
 
-**DuoArcade** es una aplicación web de minijuegos rápidos para **1 o 2 jugadores**, diseñada para jugar al instante desde el navegador sin registros ni descargas.
+**DuoArcade** es una aplicación web de minijuegos rápidos para **1 o 2 jugadores** (en un mismo dispositivo o en remoto), desarrollada como un **proyecto *vibecodeado* para probar Google Antigravity**.
 
 🔗 **Demo en vivo:** https://duo-arcade-pearl.vercel.app
 
-## Juegos incluidos
+## Juegos y modos
 
-- **Gato (Tres en Raya):** tablero clásico 3×3 con marcador de victorias y empates.
-- **Conecta 4:** tablero 7×6 con detección de línea ganadora en horizontal, vertical y diagonal.
-- **Piedra, Papel o Tijera:** duelo al mejor de 5 rondas con pantalla oculta en modo local y elección secreta simultánea en modo remoto.
+- **Gato (Tres en Raya):** tablero 3×3 con IA táctica (detección de victoria/bloqueo) en 1P.
+- **Conecta 4:** matriz 7×6 con evaluación de amenazas en 4 direcciones (horizontal, vertical y diagonales).
+- **Piedra, Papel o Tijera:** al mejor de 5 rondas con pantalla de transición oculta en 2P local y sincronización simultánea de jugadas secretas en 2P remoto.
 
-## Modos de juego
+Cada juego soporta **1P vs IA**, **2P Local** (Pass & Play) y **2P Remoto** mediante salas con enlace compartible (`?sala=CODIGO`).
 
-- **1 Jugador:** partida rápida contra la IA.
-- **2 Jugadores Local:** juego por turnos en un mismo dispositivo.
-- **2 Jugadores Remoto:** salas en tiempo real mediante enlace compartible (`?sala=CODIGO`).
+## Arquitectura y detalles técnicos
 
-## Stack tecnológico
-
-- **Framework:** Next.js (App Router) + TypeScript
-- **Estilos:** Tailwind CSS
-- **Tiempo real:** Supabase Realtime (Broadcast & Presence)
-- **Despliegue:** Vercel
+- **Frontend:** Next.js 16 (App Router + Turbopack), React 19, TypeScript y Tailwind CSS v4.
+- **Multijugador en tiempo real sin base de datos:** implementado sobre **Supabase Realtime** usando canales efímeros (`Broadcast` para movimientos/revanchas y `Presence` para detectar conexión y abandono del rival), con fallback automático a `BroadcastChannel` para pruebas locales entre pestañas cuando no hay credenciales configuradas.
+- **UI y estándares web:** soporte de tema claro/oscuro automático con `color-scheme: light dark` y tokens `light-dark()`, modales accesibles con el elemento nativo `<dialog>` (`showModal()`) y arquitectura modular de espacios publicitarios (`<AdSlot />`) compatible con Google AdSense.
+- **Infraestructura:** hospedado en **Vercel** con despliegue continuo desde GitHub y variables de entorno gestionadas por ambiente.
