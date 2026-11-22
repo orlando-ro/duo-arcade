@@ -205,6 +205,30 @@ export function TicTacToeGame() {
     if (mode === "remote" && roomCode) sendMessage("reset", {});
   };
 
+  const statusText = winner
+    ? winner === "X"
+      ? mode === "1p"
+        ? "¡Ganaste!"
+        : "¡Ganó Jugador 1 (X)!"
+      : mode === "1p"
+      ? "Ganó la IA (O)"
+      : "¡Ganó Jugador 2 (O)!"
+    : isDraw
+    ? "Empate"
+    : mode === "remote" && status !== "connected"
+    ? "Esperando al rival..."
+    : mode === "remote"
+    ? turn === mySymbol
+      ? `Tu turno (${mySymbol})`
+      : `Turno del rival (${turn})...`
+    : turn === "X"
+    ? mode === "1p"
+      ? "Turno: Tú (X)"
+      : "Turno: Jugador 1 (X)"
+    : mode === "1p"
+    ? "Turno: IA (O)"
+    : "Turno: Jugador 2 (O)";
+
   return (
     <GameShell
       game={game}
@@ -228,130 +252,72 @@ export function TicTacToeGame() {
       onReset={resetRound}
     >
       {/* Swiss Tabular Scoreboard */}
-      <div className="border border-on-surface bg-surface-container-lowest">
-        <div className="grid grid-cols-3 divide-x divide-on-surface text-left">
-          {/* Player 1 */}
+      <div className="border border-on-surface/20 bg-surface-container-lowest">
+        <div className="grid grid-cols-3 divide-x divide-on-surface/15 text-left">
           <div
-            className={`p-4 bg-surface transition-all border-b-2 ${
+            className={`p-3.5 sm:p-4 transition-all border-b-2 ${
               !gameOver && turn === "X"
                 ? "border-primary opacity-100"
                 : "border-transparent opacity-60"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-primary">
-                {mode === "1p" ? "Player 01 [X]" : "Jugador 1 [X]"}
-              </span>
-              <span className="w-2 h-2 bg-primary" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {scores.X}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Victorias
-              </span>
-            </div>
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-primary block">
+              {mode === "1p" ? "Tú (X)" : "Jugador 1 (X)"}
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {scores.X}
+            </span>
           </div>
 
-          {/* Ties */}
-          <div className="p-4 bg-surface-container-low transition-all">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-outline">
-                Tablas
-              </span>
-              <span className="text-xs font-mono text-outline">=</span>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {scores.draws}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Empates
-              </span>
-            </div>
+          <div className="p-3.5 sm:p-4 bg-surface-container-low/60">
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-outline block">
+              Empates
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {scores.draws}
+            </span>
           </div>
 
-          {/* Player 2 / AI */}
           <div
-            className={`p-4 bg-surface transition-all border-b-2 ${
+            className={`p-3.5 sm:p-4 transition-all border-b-2 ${
               !gameOver && turn === "O"
                 ? "border-on-surface opacity-100"
                 : "border-transparent opacity-60"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-on-surface">
-                {mode === "1p" ? "AI Táctica [O]" : "Jugador 2 [O]"}
-              </span>
-              <span className="w-2 h-2 bg-on-surface" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {scores.O}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Victorias
-              </span>
-            </div>
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-on-surface block">
+              {mode === "1p" ? "IA (O)" : "Jugador 2 (O)"}
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {scores.O}
+            </span>
           </div>
         </div>
 
-        {/* Turn Status Bar (Crisp Monospaced Telemetry) */}
-        <div className="p-3 bg-surface-container border-t border-on-surface flex items-center justify-between font-mono text-xs uppercase">
-          <div className="flex items-center gap-2">
-            <span
-              className={`inline-block w-2.5 h-2.5 ${
-                winner
-                  ? "bg-primary"
-                  : isDraw
-                  ? "bg-outline"
-                  : turn === "X"
-                  ? "bg-primary animate-pulse"
-                  : "bg-on-surface animate-pulse"
-              }`}
-            />
-            <span className="font-bold tracking-wide">
-              {winner
-                ? `STATUS: VICTORIA ${
-                    winner === "X"
-                      ? mode === "1p"
-                        ? "JUGADOR 1 [X]"
-                        : "JUGADOR 1 [X]"
-                      : mode === "1p"
-                      ? "IA TÁCTICA [O]"
-                      : "JUGADOR 2 [O]"
-                  }`
+        <div className="px-4 py-2.5 bg-surface-container-low border-t border-on-surface/15 flex items-center gap-2 font-mono text-xs">
+          <span
+            className={`inline-block w-2 h-2 ${
+              winner
+                ? "bg-primary"
                 : isDraw
-                ? "STATUS: EMPATE TÁCTICO REGISTRADO"
-                : mode === "remote" && status !== "connected"
-                ? "STATUS: ESPERANDO CONEXIÓN EN SALA REMOTA"
-                : mode === "remote"
-                ? turn === mySymbol
-                  ? `TURNO: TU MOVIMIENTO [${mySymbol}]`
-                  : `TURNO: ESPERANDO RIVAL [${turn}]...`
-                : `TURNO: ${
-                    turn === "X"
-                      ? "JUGADOR 1 [X]"
-                      : mode === "1p"
-                      ? "IA TÁCTICA [O]"
-                      : "JUGADOR 2 [O]"
-                  }`}
-            </span>
-          </div>
-          <span className="text-[10px] tracking-widest text-outline hidden sm:inline">
-            MOVE TIME: LIVE
-          </span>
+                ? "bg-outline"
+                : turn === "X"
+                ? "bg-primary animate-pulse"
+                : "bg-on-surface animate-pulse"
+            }`}
+          />
+          <span className="font-semibold text-on-surface">{statusText}</span>
         </div>
       </div>
 
-      {/* 3x3 Pure International Style Board */}
-      <div className="border border-on-surface bg-surface-container-lowest p-6 sm:p-10 flex flex-col items-center justify-center relative">
-        <div className="relative w-full max-w-[380px] aspect-square bg-surface border-2 border-on-surface grid grid-cols-3 grid-rows-3 select-none">
+      {/* 3x3 Board */}
+      <div className="border border-on-surface/20 bg-surface-container-lowest p-6 sm:p-8 flex flex-col items-center justify-center">
+        <div className="w-full max-w-[340px] aspect-square bg-surface border-2 border-on-surface grid grid-cols-3 grid-rows-3 select-none">
           {board.map((cell, idx) => {
             const isWinCell = line?.includes(idx) ?? false;
             const isHintCell = hintCell === idx;
-            const borderRight = idx % 3 !== 2 ? "border-r-2 border-on-surface" : "";
+            const borderRight =
+              idx % 3 !== 2 ? "border-r-2 border-on-surface" : "";
             const borderBottom = idx < 6 ? "border-b-2 border-on-surface" : "";
 
             return (
@@ -369,7 +335,7 @@ export function TicTacToeGame() {
               >
                 {cell === "X" && (
                   <svg
-                    className="w-14 h-14 sm:w-20 sm:h-20"
+                    className="w-12 h-12 sm:w-16 sm:h-16"
                     viewBox="0 0 100 100"
                   >
                     <line
@@ -394,7 +360,7 @@ export function TicTacToeGame() {
                 )}
                 {cell === "O" && (
                   <svg
-                    className="w-14 h-14 sm:w-20 sm:h-20"
+                    className="w-12 h-12 sm:w-16 sm:h-16"
                     viewBox="0 0 100 100"
                   >
                     <circle
@@ -412,24 +378,28 @@ export function TicTacToeGame() {
           })}
         </div>
 
-        {/* Bottom Action Buttons: Pure Swiss Typography */}
-        <div className="w-full max-w-[380px] mt-6 pt-4 border-t border-surface-container-highest flex items-center justify-between">
-          <button
-            type="button"
-            onClick={handleUndo}
-            disabled={mode === "remote" || gameOver || history.length === 0}
-            className="h-8 px-3 border border-on-surface text-xs font-mono uppercase font-semibold hover:bg-surface-container flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <Undo2 className="h-3.5 w-3.5" />
-            <span>Deshacer</span>
-          </button>
+        {/* Bottom Actions */}
+        <div className="w-full max-w-[340px] mt-5 pt-4 border-t border-on-surface/15 flex items-center justify-between">
+          {mode !== "remote" ? (
+            <button
+              type="button"
+              onClick={handleUndo}
+              disabled={gameOver || history.length === 0}
+              className="h-8 px-3 border border-on-surface/25 text-xs font-mono uppercase font-semibold hover:border-on-surface flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Undo2 className="h-3.5 w-3.5" />
+              <span>Deshacer</span>
+            </button>
+          ) : (
+            <span />
+          )}
 
           <span
-            className={`text-[11px] font-mono uppercase font-bold text-primary transition-opacity ${
+            className={`text-[11px] font-mono uppercase font-semibold text-primary transition-opacity ${
               hintCell !== null ? "opacity-100" : "opacity-0"
             }`}
           >
-            [Sugerencia Calculada]
+            Sugerencia
           </span>
 
           <button
@@ -439,20 +409,19 @@ export function TicTacToeGame() {
             className="h-8 px-3 bg-on-surface text-surface-container-lowest hover:bg-primary hover:text-white text-xs font-mono uppercase font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Lightbulb className="h-3.5 w-3.5" />
-            <span>Pista Táctica</span>
+            <span>Pista</span>
           </button>
         </div>
 
-        {/* Post-game Rematch + Interstitial Ad */}
         {gameOver && (
-          <div className="w-full mt-6 space-y-4 border-t border-on-surface/20 pt-5">
+          <div className="w-full mt-6 space-y-4 border-t border-on-surface/15 pt-5">
             <div className="flex justify-center">
               <button
                 type="button"
                 onClick={resetRound}
-                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-on-surface"
+                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
-                + JUGAR REVANCHA
+                Jugar revancha
               </button>
             </div>
             <AdSlot format="interstitial" label="Anuncio Post-Partida" />

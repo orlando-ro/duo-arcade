@@ -235,6 +235,28 @@ export function MemoryGame() {
     }
   };
 
+  const statusText = allMatched
+    ? scores.p1 > scores.p2
+      ? `¡Ganó ${mode === "1p" ? "Tú" : "Jugador 1"} (${scores.p1} a ${scores.p2})!`
+      : scores.p2 > scores.p1
+      ? `¡Ganó ${mode === "1p" ? "la IA" : "Jugador 2"} (${scores.p2} a ${scores.p1})!`
+      : "Empate (4 a 4)"
+    : mode === "remote" && status !== "connected"
+    ? "Esperando al rival..."
+    : mode === "remote"
+    ? turn === myPlayer
+      ? "Tu turno — voltea 2 cartas"
+      : "Turno del rival..."
+    : `Turno: ${
+        turn === 1
+          ? mode === "1p"
+            ? "Tú"
+            : "Jugador 1"
+          : mode === "1p"
+          ? "IA"
+          : "Jugador 2"
+      } (si aciertas, repites turno)`;
+
   return (
     <GameShell
       game={game}
@@ -261,120 +283,67 @@ export function MemoryGame() {
       onReset={() => resetBoard()}
     >
       {/* Swiss Tabular Scoreboard */}
-      <div className="border border-on-surface bg-surface-container-lowest">
-        <div className="grid grid-cols-3 divide-x divide-on-surface text-left">
+      <div className="border border-on-surface/20 bg-surface-container-lowest">
+        <div className="grid grid-cols-3 divide-x divide-on-surface/15 text-left">
           <div
-            className={`p-4 bg-surface transition-all border-b-2 ${
+            className={`p-3.5 sm:p-4 transition-all border-b-2 ${
               !allMatched && turn === 1
                 ? "border-primary opacity-100"
                 : "border-transparent opacity-60"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-primary">
-                {mode === "1p" ? "Player 01" : "Jugador 1"} ({matchWins.p1}V)
-              </span>
-              <span className="w-2 h-2 bg-primary" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {scores.p1}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Pares
-              </span>
-            </div>
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-primary block">
+              {mode === "1p" ? "Tú" : "Jugador 1"} ({matchWins.p1}v)
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {scores.p1}
+            </span>
           </div>
 
-          <div className="p-4 bg-surface-container-low">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-outline">
-                Restantes
-              </span>
-              <span className="text-xs font-mono text-outline">#</span>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {8 - (scores.p1 + scores.p2)}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Pares
-              </span>
-            </div>
+          <div className="p-3.5 sm:p-4 bg-surface-container-low/60">
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-outline block">
+              Restantes
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {8 - (scores.p1 + scores.p2)}
+            </span>
           </div>
 
           <div
-            className={`p-4 bg-surface transition-all border-b-2 ${
+            className={`p-3.5 sm:p-4 transition-all border-b-2 ${
               !allMatched && turn === 2
                 ? "border-on-surface opacity-100"
                 : "border-transparent opacity-60"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-on-surface">
-                {mode === "1p" ? "AI Táctica" : "Jugador 2"} ({matchWins.p2}V)
-              </span>
-              <span className="w-2 h-2 bg-on-surface" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {scores.p2}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Pares
-              </span>
-            </div>
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-on-surface block">
+              {mode === "1p" ? "IA" : "Jugador 2"} ({matchWins.p2}v)
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {scores.p2}
+            </span>
           </div>
         </div>
 
-        {/* Turn Status Bar */}
-        <div className="p-3 bg-surface-container border-t border-on-surface flex items-center justify-between font-mono text-xs uppercase">
-          <div className="flex items-center gap-2">
-            <span
-              className={`inline-block w-2.5 h-2.5 ${
-                allMatched
-                  ? "bg-primary"
-                  : turn === 1
-                  ? "bg-primary animate-pulse"
-                  : "bg-on-surface animate-pulse"
-              }`}
-            />
-            <span className="font-bold tracking-wide">
-              {allMatched
-                ? scores.p1 > scores.p2
-                  ? `STATUS: VICTORIA JUGADOR 1 (${scores.p1}-${scores.p2})`
-                  : scores.p2 > scores.p1
-                  ? `STATUS: VICTORIA ${
-                      mode === "1p" ? "IA TÁCTICA" : "JUGADOR 2"
-                    } (${scores.p2}-${scores.p1})`
-                  : "STATUS: EMPATE EXACTO (4-4)"
-                : mode === "remote" && status !== "connected"
-                ? "STATUS: ESPERANDO CONEXIÓN EN SALA REMOTA"
-                : mode === "remote"
-                ? turn === myPlayer
-                  ? "TURNO: VOLTEA 2 MÓDULOS (+1 TURNO SI ACIERTAS)"
-                  : "TURNO: ESPERANDO RIVAL..."
-                : `TURNO: ${
-                    turn === 1
-                      ? "JUGADOR 1"
-                      : mode === "1p"
-                      ? "IA TÁCTICA"
-                      : "JUGADOR 2"
-                  } (+1 EXTRA TURN)`}
-            </span>
-          </div>
-          <span className="text-[10px] tracking-widest text-outline hidden sm:inline">
-            MATRIZ 4×4
-          </span>
+        <div className="px-4 py-2.5 bg-surface-container-low border-t border-on-surface/15 flex items-center gap-2 font-mono text-xs">
+          <span
+            className={`inline-block w-2 h-2 ${
+              allMatched
+                ? "bg-primary"
+                : turn === 1
+                ? "bg-primary animate-pulse"
+                : "bg-on-surface animate-pulse"
+            }`}
+          />
+          <span className="font-semibold text-on-surface">{statusText}</span>
         </div>
       </div>
 
-      {/* 4x4 Swiss Cards Grid */}
-      <div className="border border-on-surface bg-surface-container-lowest p-6 sm:p-10 flex flex-col items-center justify-center">
-        <div className="w-full max-w-[380px] grid grid-cols-4 gap-2.5">
+      {/* 4x4 Cards Grid */}
+      <div className="border border-on-surface/20 bg-surface-container-lowest p-6 sm:p-8 flex flex-col items-center justify-center">
+        <div className="w-full max-w-[360px] grid grid-cols-4 gap-2.5">
           {deck.map((symbol, idx) => {
             const isOpen = matched[idx] || flipped.includes(idx);
-            const codeLabel = String(idx + 1).padStart(2, "0");
             return (
               <button
                 key={idx}
@@ -382,17 +351,14 @@ export function MemoryGame() {
                 onClick={() => handleCardClick(idx)}
                 disabled={isOpen || locked || allMatched}
                 aria-label={`Carta ${idx + 1}${isOpen ? `: ${symbol}` : ""}`}
-                className={`aspect-square border-2 flex flex-col items-center justify-between p-2 font-mono transition-all cursor-pointer disabled:cursor-default ${
+                className={`aspect-square border-2 flex items-center justify-center font-mono transition-all cursor-pointer disabled:cursor-default ${
                   matched[idx]
                     ? "border-primary bg-primary text-white"
                     : isOpen
                     ? "border-on-surface bg-on-surface text-surface-container-lowest"
-                    : "border-on-surface/40 bg-surface hover:border-on-surface hover:bg-surface-container"
+                    : "border-on-surface/35 bg-surface hover:border-on-surface hover:bg-surface-container"
                 }`}
               >
-                <span className="self-start text-[9px] opacity-60">
-                  {codeLabel}
-                </span>
                 {isOpen ? (
                   <span className="text-2xl sm:text-3xl font-bold leading-none">
                     {symbol}
@@ -400,21 +366,20 @@ export function MemoryGame() {
                 ) : (
                   <span className="text-sm font-bold text-outline">#</span>
                 )}
-                <span className="self-end text-[8px] opacity-40">+</span>
               </button>
             );
           })}
         </div>
 
         {allMatched && (
-          <div className="w-full mt-6 space-y-4 border-t border-on-surface/20 pt-5">
+          <div className="w-full mt-6 space-y-4 border-t border-on-surface/15 pt-5">
             <div className="flex justify-center">
               <button
                 type="button"
                 onClick={() => resetBoard()}
-                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-on-surface"
+                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
-                + JUGAR REVANCHA
+                Jugar revancha
               </button>
             </div>
             <AdSlot format="interstitial" label="Anuncio Post-Partida" />

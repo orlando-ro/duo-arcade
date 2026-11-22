@@ -182,6 +182,32 @@ export function DotsAndBoxesGame() {
     }
   };
 
+  const statusText = gameOver
+    ? `¡Ganó ${
+        p1Score > p2Score
+          ? mode === "1p"
+            ? "Tú"
+            : "Jugador 1"
+          : mode === "1p"
+          ? "la IA"
+          : "Jugador 2"
+      } (${Math.max(p1Score, p2Score)} a ${Math.min(p1Score, p2Score)})!`
+    : mode === "remote" && status !== "connected"
+    ? "Esperando al rival..."
+    : mode === "remote"
+    ? turn === myPlayer
+      ? "Tu turno — traza una línea"
+      : "Turno del rival..."
+    : `Turno: ${
+        turn === 1
+          ? mode === "1p"
+            ? "Tú"
+            : "Jugador 1"
+          : mode === "1p"
+          ? "IA"
+          : "Jugador 2"
+      }`;
+
   return (
     <GameShell
       game={game}
@@ -203,123 +229,67 @@ export function DotsAndBoxesGame() {
       onReset={resetGame}
     >
       {/* Swiss Tabular Scoreboard */}
-      <div className="border border-on-surface bg-surface-container-lowest">
-        <div className="grid grid-cols-3 divide-x divide-on-surface text-left">
+      <div className="border border-on-surface/20 bg-surface-container-lowest">
+        <div className="grid grid-cols-3 divide-x divide-on-surface/15 text-left">
           <div
-            className={`p-4 bg-surface transition-all border-b-2 ${
+            className={`p-3.5 sm:p-4 transition-all border-b-2 ${
               !gameOver && turn === 1
                 ? "border-primary opacity-100"
                 : "border-transparent opacity-60"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-primary">
-                {mode === "1p" ? "Player 01 [J1]" : "Jugador 1 [J1]"}
-              </span>
-              <span className="w-2 h-2 bg-primary" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {p1Score}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Cajas
-              </span>
-            </div>
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-primary block">
+              {mode === "1p" ? "Tú" : "Jugador 1"}
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {p1Score}
+            </span>
           </div>
 
-          <div className="p-4 bg-surface-container-low">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-outline">
-                Libres
-              </span>
-              <span className="text-xs font-mono text-outline">□</span>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {totalBoxes - (p1Score + p2Score)}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Módulos
-              </span>
-            </div>
+          <div className="p-3.5 sm:p-4 bg-surface-container-low/60">
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-outline block">
+              Libres
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {totalBoxes - (p1Score + p2Score)}
+            </span>
           </div>
 
           <div
-            className={`p-4 bg-surface transition-all border-b-2 ${
+            className={`p-3.5 sm:p-4 transition-all border-b-2 ${
               !gameOver && turn === 2
                 ? "border-on-surface opacity-100"
                 : "border-transparent opacity-60"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-on-surface">
-                {mode === "1p" ? "AI Táctica [IA]" : "Jugador 2 [J2]"}
-              </span>
-              <span className="w-2 h-2 bg-on-surface" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {p2Score}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Cajas
-              </span>
-            </div>
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-on-surface block">
+              {mode === "1p" ? "IA" : "Jugador 2"}
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {p2Score}
+            </span>
           </div>
         </div>
 
-        {/* Turn Status Bar */}
-        <div className="p-3 bg-surface-container border-t border-on-surface flex items-center justify-between font-mono text-xs uppercase">
-          <div className="flex items-center gap-2">
-            <span
-              className={`inline-block w-2.5 h-2.5 ${
-                gameOver
-                  ? "bg-primary"
-                  : turn === 1
-                  ? "bg-primary animate-pulse"
-                  : "bg-on-surface animate-pulse"
-              }`}
-            />
-            <span className="font-bold tracking-wide">
-              {gameOver
-                ? `STATUS: VICTORIA ${
-                    p1Score > p2Score
-                      ? "JUGADOR 1 [J1]"
-                      : mode === "1p"
-                      ? "IA TÁCTICA [IA]"
-                      : "JUGADOR 2 [J2]"
-                  } (${Math.max(p1Score, p2Score)}-${Math.min(
-                    p1Score,
-                    p2Score
-                  )})`
-                : mode === "remote" && status !== "connected"
-                ? "STATUS: ESPERANDO CONEXIÓN EN SALA REMOTA"
-                : mode === "remote"
-                ? turn === myPlayer
-                  ? "TURNO: TRAZA UN VECTOR ENTRE DOS NODOS"
-                  : "TURNO: ESPERANDO RIVAL..."
-                : `TURNO: ${
-                    turn === 1
-                      ? "JUGADOR 1 [J1]"
-                      : mode === "1p"
-                      ? "IA TÁCTICA [IA]"
-                      : "JUGADOR 2 [J2]"
-                  }`}
-            </span>
-          </div>
-          <span className="text-[10px] tracking-widest text-outline hidden sm:inline">
-            TOPOLOGÍA 9C
-          </span>
+        <div className="px-4 py-2.5 bg-surface-container-low border-t border-on-surface/15 flex items-center gap-2 font-mono text-xs">
+          <span
+            className={`inline-block w-2 h-2 ${
+              gameOver
+                ? "bg-primary"
+                : turn === 1
+                ? "bg-primary animate-pulse"
+                : "bg-on-surface animate-pulse"
+            }`}
+          />
+          <span className="font-semibold text-on-surface">{statusText}</span>
         </div>
       </div>
 
-      {/* Dots & Boxes Swiss Grid */}
-      <div className="border border-on-surface bg-surface-container-lowest p-6 sm:p-10 flex flex-col items-center justify-center">
+      {/* Dots & Boxes Grid */}
+      <div className="border border-on-surface/20 bg-surface-container-lowest p-6 sm:p-8 flex flex-col items-center justify-center">
         <div className="w-full max-w-[340px] border-2 border-on-surface bg-surface p-6">
           {Array.from({ length: BOX_SIZE + 1 }, (_, r) => (
             <div key={r} className="w-full">
-              {/* Horizontal row of square nodes and horizontal vectors */}
               <div className="flex items-center justify-between">
                 {Array.from({ length: BOX_SIZE + 1 }, (__, c) => (
                   <div
@@ -346,7 +316,6 @@ export function DotsAndBoxesGame() {
                 ))}
               </div>
 
-              {/* Vertical vectors and boxes row */}
               {r < BOX_SIZE && (
                 <div className="my-1 flex h-16 items-stretch justify-between">
                   {Array.from({ length: BOX_SIZE + 1 }, (__, c) => (
@@ -395,14 +364,14 @@ export function DotsAndBoxesGame() {
         </div>
 
         {gameOver && (
-          <div className="w-full mt-6 space-y-4 border-t border-on-surface/20 pt-5">
+          <div className="w-full mt-6 space-y-4 border-t border-on-surface/15 pt-5">
             <div className="flex justify-center">
               <button
                 type="button"
                 onClick={resetGame}
-                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-on-surface"
+                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
-                + JUGAR REVANCHA
+                Jugar revancha
               </button>
             </div>
             <AdSlot format="interstitial" label="Anuncio Post-Partida" />

@@ -17,23 +17,23 @@ const FORMAT_STYLES: Record<
 > = {
   leaderboard: {
     sizeClass: "min-h-[90px] w-full max-w-[728px]",
-    dimensions: "728×90 / RESPONSIVE",
-    defaultLabel: "BANNER SUPERIOR / INFERIOR",
+    dimensions: "728×90",
+    defaultLabel: "Banner",
   },
   "mobile-banner": {
     sizeClass: "min-h-[60px] w-full max-w-[320px]",
-    dimensions: "320×50 / RESPONSIVE",
-    defaultLabel: "BANNER MÓVIL",
+    dimensions: "320×50",
+    defaultLabel: "Banner móvil",
   },
   rectangle: {
     sizeClass: "min-h-[250px] w-full max-w-[300px]",
     dimensions: "300×250",
-    defaultLabel: "MÓDULO LATERAL",
+    defaultLabel: "Anuncio",
   },
   interstitial: {
-    sizeClass: "min-h-[200px] w-full",
-    dimensions: "RESPONSIVE POST-PARTIDA",
-    defaultLabel: "ANUNCIO ENTRE PARTIDAS",
+    sizeClass: "min-h-[160px] w-full",
+    dimensions: "Post-partida",
+    defaultLabel: "Anuncio",
   },
 };
 
@@ -87,17 +87,12 @@ export function AdSlot({
   return (
     <aside
       aria-label="Espacio publicitario"
-      className={`mx-auto flex flex-col items-center justify-center border border-dashed border-on-surface/30 bg-surface-container-low px-4 py-3 text-center font-mono ${meta.sizeClass} ${className}`}
+      className={`mx-auto flex flex-col items-center justify-center border border-dashed border-on-surface/15 bg-surface-container-low/60 px-4 py-3 text-center font-mono ${meta.sizeClass} ${className}`}
     >
-      <span className="border border-on-surface/20 bg-surface px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-outline">
-        ESPACIO PUBLICITARIO
-      </span>
-      <p className="mt-1.5 text-xs font-bold uppercase text-on-surface">
-        {label ?? meta.defaultLabel}
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-outline">
+        {label ?? meta.defaultLabel} · {meta.dimensions}
       </p>
-      <p className="text-[10px] text-outline uppercase">
-        {meta.dimensions} · PREVIEW MODE
-      </p>
+      <p className="text-[10px] text-outline/70">Espacio publicitario</p>
     </aside>
   );
 }

@@ -9,10 +9,10 @@ import { AdSlot } from "@/components/AdSlot";
 
 type Choice = "rock" | "paper" | "scissors";
 
-const CHOICES: { id: Choice; code: string; label: string; emoji: string }[] = [
-  { id: "rock", code: "01", label: "PIEDRA", emoji: "🪨" },
-  { id: "paper", code: "02", label: "PAPEL", emoji: "📄" },
-  { id: "scissors", code: "03", label: "TIJERA", emoji: "✂️" },
+const CHOICES: { id: Choice; label: string; emoji: string }[] = [
+  { id: "rock", label: "Piedra", emoji: "🪨" },
+  { id: "paper", label: "Papel", emoji: "📄" },
+  { id: "scissors", label: "Tijera", emoji: "✂️" },
 ];
 
 function pickRandomChoice(): Choice {
@@ -187,6 +187,24 @@ export function RockPaperScissorsGame() {
     (mode === "local" && localPhase === "reveal") ||
     (mode === "remote" && Boolean(p1Choice && p2Choice));
 
+  const statusText = matchWinner
+    ? matchWinner === 1
+      ? mode === "1p"
+        ? "¡Ganaste la serie!"
+        : "¡Jugador 1 ganó la serie!"
+      : mode === "1p"
+      ? "La IA ganó la serie"
+      : "¡Jugador 2 ganó la serie!"
+    : mode === "remote" && status !== "connected"
+    ? "Esperando al rival..."
+    : mode === "remote" && myRemotePicked
+    ? opponentRemotePicked
+      ? "Revelando jugadas..."
+      : "Ya elegiste. Esperando al rival..."
+    : mode === "local"
+    ? `Turno de ${localPhase === "p1" ? "Jugador 1" : "Jugador 2"}: elige en secreto`
+    : "Elige tu jugada";
+
   return (
     <GameShell
       game={game}
@@ -211,101 +229,58 @@ export function RockPaperScissorsGame() {
       onReset={resetMatch}
     >
       {/* Swiss Tabular Scoreboard */}
-      <div className="border border-on-surface bg-surface-container-lowest">
-        <div className="grid grid-cols-3 divide-x divide-on-surface text-left">
-          <div className="p-4 bg-surface border-b-2 border-primary">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-primary">
-                {mode === "1p" ? "Player 01" : "Jugador 1"}
-              </span>
-              <span className="w-2 h-2 bg-primary" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+      <div className="border border-on-surface/20 bg-surface-container-lowest">
+        <div className="grid grid-cols-3 divide-x divide-on-surface/15 text-left">
+          <div className="p-3.5 sm:p-4 border-b-2 border-primary">
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-primary block">
+              {mode === "1p" ? "Tú" : "Jugador 1"}
+            </span>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
                 {scores.p1}
               </span>
-              <span className="text-[11px] font-mono uppercase text-outline">
+              <span className="text-xs font-mono text-outline">
                 / {TARGET_WINS}
               </span>
             </div>
           </div>
 
-          <div className="p-4 bg-surface-container-low">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-outline">
-                Tablas
-              </span>
-              <span className="text-xs font-mono text-outline">=</span>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
-                {scores.draws}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
-                Rondas
-              </span>
-            </div>
+          <div className="p-3.5 sm:p-4 bg-surface-container-low/60">
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-outline block">
+              Empates
+            </span>
+            <span className="mt-1 block text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
+              {scores.draws}
+            </span>
           </div>
 
-          <div className="p-4 bg-surface border-b-2 border-on-surface">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-on-surface">
-                {mode === "1p" ? "AI Táctica" : "Jugador 2"}
-              </span>
-              <span className="w-2 h-2 bg-on-surface" />
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+          <div className="p-3.5 sm:p-4 border-b-2 border-on-surface">
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-on-surface block">
+              {mode === "1p" ? "IA" : "Jugador 2"}
+            </span>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="text-3xl sm:text-4xl font-mono font-bold tracking-tight text-on-surface">
                 {scores.p2}
               </span>
-              <span className="text-[11px] font-mono uppercase text-outline">
+              <span className="text-xs font-mono text-outline">
                 / {TARGET_WINS}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Status Bar */}
-        <div className="p-3 bg-surface-container border-t border-on-surface flex items-center justify-between font-mono text-xs uppercase">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 bg-primary animate-pulse" />
-            <span className="font-bold tracking-wide">
-              {matchWinner
-                ? `SERIE FINALIZADA: VICTORIA ${
-                    matchWinner === 1
-                      ? "JUGADOR 1"
-                      : mode === "1p"
-                      ? "IA TÁCTICA"
-                      : "JUGADOR 2"
-                  }`
-                : mode === "remote" && status !== "connected"
-                ? "STATUS: ESPERANDO CONEXIÓN EN SALA REMOTA"
-                : mode === "remote" && myRemotePicked
-                ? opponentRemotePicked
-                  ? "STATUS: REVELANDO JUGADAS..."
-                  : "STATUS: JUGADA SELLADA — ESPERANDO RIVAL..."
-                : mode === "local"
-                ? `TURNO OCULTO: ${
-                    localPhase === "p1" ? "JUGADOR 1" : "JUGADOR 2"
-                  }`
-                : "PROTOCOLO CIEGO: SELECCIONA TU JUGADA"}
-            </span>
-          </div>
-          <span className="text-[10px] tracking-widest text-outline hidden sm:inline">
-            SERIE BO5
-          </span>
+        <div className="px-4 py-2.5 bg-surface-container-low border-t border-on-surface/15 flex items-center gap-2 font-mono text-xs">
+          <span className="inline-block w-2 h-2 bg-primary animate-pulse" />
+          <span className="font-semibold text-on-surface">{statusText}</span>
         </div>
       </div>
 
       {/* Main Arena */}
-      <div className="border border-on-surface bg-surface-container-lowest p-6 sm:p-10">
+      <div className="border border-on-surface/20 bg-surface-container-lowest p-6 sm:p-8">
         {mode === "local" && localPhase === "handoff" ? (
-          <div className="mx-auto max-w-sm border-2 border-on-surface bg-surface-container-low p-6 text-center space-y-4">
-            <span className="inline-block font-mono text-[10px] uppercase px-2 py-0.5 bg-primary text-white font-bold">
-              PANTALLA DE BLOQUEO
-            </span>
-            <p className="text-base font-grotesk font-bold uppercase">
-              Jugador 1 ya selló su jugada
+          <div className="mx-auto max-w-sm border border-on-surface/25 bg-surface-container-low p-6 text-center space-y-4">
+            <p className="text-base font-grotesk font-bold uppercase text-on-surface">
+              Jugador 1 ya eligió
             </p>
             <p className="text-xs font-mono text-outline">
               Pasa el dispositivo al Jugador 2 para que elija en secreto.
@@ -315,7 +290,7 @@ export function RockPaperScissorsGame() {
               onClick={() => setLocalPhase("p2")}
               className="w-full py-3 bg-on-surface text-surface-container-lowest hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
             >
-              LISTO, SOY JUGADOR 2
+              Listo, soy Jugador 2
             </button>
           </div>
         ) : showReveal && p1Choice && p2Choice ? (
@@ -323,7 +298,7 @@ export function RockPaperScissorsGame() {
             <div className="grid grid-cols-2 gap-4">
               <div className="border-2 border-primary bg-surface p-5">
                 <p className="font-mono text-[11px] font-bold uppercase text-primary">
-                  {mode === "1p" ? "PLAYER 01" : "JUGADOR 1"}
+                  {mode === "1p" ? "Tú" : "Jugador 1"}
                 </p>
                 <p className="mt-3 text-5xl">
                   {CHOICES.find((c) => c.id === p1Choice)?.emoji}
@@ -334,7 +309,7 @@ export function RockPaperScissorsGame() {
               </div>
               <div className="border-2 border-on-surface bg-surface p-5">
                 <p className="font-mono text-[11px] font-bold uppercase text-on-surface">
-                  {mode === "1p" ? "AI TÁCTICA" : "JUGADOR 2"}
+                  {mode === "1p" ? "IA" : "Jugador 2"}
                 </p>
                 <p className="mt-3 text-5xl">
                   {CHOICES.find((c) => c.id === p2Choice)?.emoji}
@@ -345,22 +320,20 @@ export function RockPaperScissorsGame() {
               </div>
             </div>
 
-            <div className="p-3 border border-on-surface bg-surface-container-low font-mono text-xs font-bold uppercase">
+            <div className="p-3 border border-on-surface/20 bg-surface-container-low font-mono text-xs font-bold uppercase">
               {matchWinner
-                ? `🏆 SERIE GANADA POR ${
-                    matchWinner === 1
-                      ? mode === "1p"
-                        ? "JUGADOR 1"
-                        : "JUGADOR 1"
-                      : mode === "1p"
-                      ? "LA IA"
-                      : "JUGADOR 2"
-                  }`
+                ? matchWinner === 1
+                  ? mode === "1p"
+                    ? "¡Ganaste la partida!"
+                    : "¡Jugador 1 ganó la partida!"
+                  : mode === "1p"
+                  ? "La IA ganó la partida"
+                  : "¡Jugador 2 ganó la partida!"
                 : roundResult === 0
-                ? "EMPATE EN ESTA RONDA"
+                ? "Empate en esta ronda"
                 : roundResult === 1
-                ? `PUNTO PARA ${mode === "1p" ? "PLAYER 01" : "JUGADOR 1"}`
-                : `PUNTO PARA ${mode === "1p" ? "LA IA" : "JUGADOR 2"}`}
+                ? `Punto para ${mode === "1p" ? "ti" : "Jugador 1"}`
+                : `Punto para ${mode === "1p" ? "la IA" : "Jugador 2"}`}
             </div>
 
             {!matchWinner && (
@@ -369,12 +342,12 @@ export function RockPaperScissorsGame() {
                 onClick={nextRound}
                 className="bg-on-surface text-surface-container-lowest hover:bg-primary hover:text-white px-6 py-3 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
-                SIGUIENTE RONDA →
+                Siguiente ronda →
               </button>
             )}
           </div>
         ) : (
-          <div className="mx-auto max-w-md grid grid-cols-3 gap-4">
+          <div className="mx-auto max-w-md grid grid-cols-3 gap-3 sm:gap-4">
             {CHOICES.map((c) => (
               <button
                 key={c.id}
@@ -385,11 +358,8 @@ export function RockPaperScissorsGame() {
                     (status !== "connected" || myRemotePicked)) ||
                   Boolean(matchWinner)
                 }
-                className="group border-2 border-on-surface bg-surface hover:bg-on-surface hover:text-surface-container-lowest p-4 flex flex-col items-center justify-between gap-3 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                className="border-2 border-on-surface bg-surface hover:bg-on-surface hover:text-surface-container-lowest p-4 sm:p-5 flex flex-col items-center justify-center gap-3 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <span className="self-start font-mono text-[10px] font-bold text-primary group-hover:text-white">
-                  [{c.code}]
-                </span>
                 <span className="text-4xl sm:text-5xl">{c.emoji}</span>
                 <span className="font-mono text-xs font-bold uppercase tracking-wider">
                   {c.label}
@@ -400,14 +370,14 @@ export function RockPaperScissorsGame() {
         )}
 
         {matchWinner && (
-          <div className="mt-6 space-y-4 border-t border-on-surface/20 pt-5">
+          <div className="mt-6 space-y-4 border-t border-on-surface/15 pt-5">
             <div className="flex justify-center">
               <button
                 type="button"
                 onClick={resetMatch}
-                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-on-surface"
+                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
-                + JUGAR REVANCHA
+                Jugar revancha
               </button>
             </div>
             <AdSlot format="interstitial" label="Anuncio Post-Partida" />
