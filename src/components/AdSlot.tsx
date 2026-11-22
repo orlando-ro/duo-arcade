@@ -63,6 +63,7 @@ export function AdSlot({
     }
   }, [adsenseClient, slotId]);
 
+  // Manual Ad Unit mode (when both NEXT_PUBLIC_ADSENSE_CLIENT and a specific slotId are provided)
   if (adsenseClient && slotId) {
     return (
       <div
@@ -80,6 +81,13 @@ export function AdSlot({
     );
   }
 
+  // Auto Ads mode: when NEXT_PUBLIC_ADSENSE_CLIENT is configured without manual slotIds,
+  // hide the development placeholder boxes so the site looks clean for AdSense review
+  // and Google Auto Ads can inject ads automatically.
+  if (adsenseClient) {
+    return null;
+  }
+
   return (
     <aside
       aria-label="Espacio publicitario"
@@ -92,7 +100,7 @@ export function AdSlot({
         {label ?? meta.defaultLabel}
       </p>
       <p className="text-[11px] text-slate-400 dark:text-zinc-500">
-        {meta.dimensions} · Configura NEXT_PUBLIC_ADSENSE_CLIENT
+        {meta.dimensions} · Modo vista previa (sin NEXT_PUBLIC_ADSENSE_CLIENT)
       </p>
     </aside>
   );
