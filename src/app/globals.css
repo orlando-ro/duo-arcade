@@ -1,64 +1,121 @@
 @import "tailwindcss";
 
 :root {
-  --bg-light: #f8fafc;
-  --bg-dark: #09090b;
-  --fg-light: #0f172a;
-  --fg-dark: #f4f4f5;
+  --bg-light: #fcf8f8;
+  --bg-dark: #111111;
+  --fg-light: #1c1b1b;
+  --fg-dark: #f6f3f2;
   --surface-light: #ffffff;
-  --surface-dark: #18181b;
-  --border-light: #e2e8f0;
-  --border-dark: #27272a;
-  --accent-light: #4f46e5;
-  --accent-dark: #818cf8;
+  --surface-dark: #1a1919;
+  --surface-low-light: #f6f3f2;
+  --surface-low-dark: #151414;
+  --surface-container-light: #f0edec;
+  --surface-container-dark: #222020;
+  --surface-high-light: #e5e2e1;
+  --surface-high-dark: #2c2a2a;
+  --border-light: #1c1b1b;
+  --border-dark: #3f3c3c;
+  --primary-light: #b70100;
+  --primary-dark: #e60000;
+  --primary-fixed-light: #ffdad4;
+  --primary-fixed-dark: #410000;
+  --secondary-light: #0035c6;
+  --secondary-dark: #4d79ff;
+  --outline-light: #725651;
+  --outline-dark: #a89490;
 
   --background: var(--bg-light);
   --foreground: var(--fg-light);
-  --surface: var(--surface-light);
+  --surface-lowest: var(--surface-light);
+  --surface-low: var(--surface-low-light);
+  --surface-container: var(--surface-container-light);
+  --surface-high: var(--surface-high-light);
   --border-color: var(--border-light);
-  --accent: var(--accent-light);
+  --primary: var(--primary-light);
+  --primary-fixed: var(--primary-fixed-light);
+  --secondary: var(--secondary-light);
+  --outline: var(--outline-light);
 
   @media (prefers-color-scheme: dark) {
     --background: var(--bg-dark);
     --foreground: var(--fg-dark);
-    --surface: var(--surface-dark);
+    --surface-lowest: var(--surface-dark);
+    --surface-low: var(--surface-low-dark);
+    --surface-container: var(--surface-container-dark);
+    --surface-high: var(--surface-high-dark);
     --border-color: var(--border-dark);
-    --accent: var(--accent-dark);
+    --primary: var(--primary-dark);
+    --primary-fixed: var(--primary-fixed-dark);
+    --secondary: var(--secondary-dark);
+    --outline: var(--outline-dark);
   }
 
   @supports (color: light-dark(white, black)) {
     --background: light-dark(var(--bg-light), var(--bg-dark));
     --foreground: light-dark(var(--fg-light), var(--fg-dark));
-    --surface: light-dark(var(--surface-light), var(--surface-dark));
+    --surface-lowest: light-dark(var(--surface-light), var(--surface-dark));
+    --surface-low: light-dark(var(--surface-low-light), var(--surface-low-dark));
+    --surface-container: light-dark(
+      var(--surface-container-light),
+      var(--surface-container-dark)
+    );
+    --surface-high: light-dark(
+      var(--surface-high-light),
+      var(--surface-high-dark)
+    );
     --border-color: light-dark(var(--border-light), var(--border-dark));
-    --accent: light-dark(var(--accent-light), var(--accent-dark));
+    --primary: light-dark(var(--primary-light), var(--primary-dark));
+    --primary-fixed: light-dark(
+      var(--primary-fixed-light),
+      var(--primary-fixed-dark)
+    );
+    --secondary: light-dark(var(--secondary-light), var(--secondary-dark));
+    --outline: light-dark(var(--outline-light), var(--outline-dark));
   }
 
   color-scheme: light dark;
-  accent-color: var(--accent);
+  accent-color: var(--primary);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-on-surface: var(--foreground);
+  --color-surface: var(--background);
+  --color-surface-container-lowest: var(--surface-lowest);
+  --color-surface-container-low: var(--surface-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-high);
+  --color-surface-container-highest: var(--surface-high);
+  --color-primary: var(--primary);
+  --color-primary-container: #e60000;
+  --color-primary-fixed: var(--primary-fixed);
+  --color-secondary: var(--secondary);
+  --color-outline: var(--outline);
+  --color-swiss-red: var(--primary);
+  --color-swiss-black: var(--foreground);
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-grotesk: "Space Grotesk", system-ui, sans-serif;
+  --font-headline: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
 }
 
-/* Native <dialog> modal scroll containment (modern-web-guidance) */
+/* Native <dialog> modal scroll containment */
 dialog:modal {
   overscroll-behavior: contain;
 }
 
 dialog::backdrop {
-  background: rgb(0 0 0 / 0.6);
-  backdrop-filter: blur(4px);
+  background: rgb(0 0 0 / 0.65);
+  backdrop-filter: blur(2px);
   overflow: hidden;
   overscroll-behavior: contain;
 }

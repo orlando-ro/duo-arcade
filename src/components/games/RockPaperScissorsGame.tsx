@@ -9,10 +9,10 @@ import { AdSlot } from "@/components/AdSlot";
 
 type Choice = "rock" | "paper" | "scissors";
 
-const CHOICES: { id: Choice; label: string; emoji: string }[] = [
-  { id: "rock", label: "Piedra", emoji: "🪨" },
-  { id: "paper", label: "Papel", emoji: "📄" },
-  { id: "scissors", label: "Tijera", emoji: "✂️" },
+const CHOICES: { id: Choice; code: string; label: string; emoji: string }[] = [
+  { id: "rock", code: "01", label: "PIEDRA", emoji: "🪨" },
+  { id: "paper", code: "02", label: "PAPEL", emoji: "📄" },
+  { id: "scissors", code: "03", label: "TIJERA", emoji: "✂️" },
 ];
 
 function pickRandomChoice(): Choice {
@@ -47,7 +47,9 @@ export function RockPaperScissorsGame() {
 
   const [p1Choice, setP1Choice] = useState<Choice | null>(null);
   const [p2Choice, setP2Choice] = useState<Choice | null>(null);
-  const [localPhase, setLocalPhase] = useState<"p1" | "handoff" | "p2" | "reveal">("p1");
+  const [localPhase, setLocalPhase] = useState<
+    "p1" | "handoff" | "p2" | "reveal"
+  >("p1");
   const [scores, setScores] = useState({ p1: 0, p2: 0, draws: 0 });
   const [roundResult, setRoundResult] = useState<0 | 1 | 2 | null>(null);
 
@@ -208,131 +210,171 @@ export function RockPaperScissorsGame() {
       onLeaveRoom={leaveRoom}
       onReset={resetMatch}
     >
-      {/* Scoreboard */}
-      <div className="mb-6 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-xl border border-slate-200 dark:border-zinc-800 p-2.5">
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            {mode === "1p" ? "Tú" : "Jugador 1"}
-          </p>
-          <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-            {scores.p1} / {TARGET_WINS}
-          </p>
-        </div>
-        <div className="rounded-xl border border-slate-200 dark:border-zinc-800 p-2.5">
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            Empates
-          </p>
-          <p className="text-xl font-bold text-slate-700 dark:text-zinc-200">
-            {scores.draws}
-          </p>
-        </div>
-        <div className="rounded-xl border border-slate-200 dark:border-zinc-800 p-2.5">
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            {mode === "1p" ? "IA" : "Jugador 2"}
-          </p>
-          <p className="text-xl font-bold text-rose-600 dark:text-rose-400">
-            {scores.p2} / {TARGET_WINS}
-          </p>
-        </div>
-      </div>
-
-      {/* Local Handoff Screen */}
-      {mode === "local" && localPhase === "handoff" ? (
-        <div className="mx-auto max-w-sm rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 p-6 text-center">
-          <p className="text-base font-bold">
-            Jugador 1 ya eligió en secreto
-          </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
-            Pasa el dispositivo al Jugador 2 para que elija su jugada.
-          </p>
-          <button
-            type="button"
-            onClick={() => setLocalPhase("p2")}
-            className="mt-4 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 transition-colors cursor-pointer"
-          >
-            Listo, soy Jugador 2
-          </button>
-        </div>
-      ) : showReveal && p1Choice && p2Choice ? (
-        <div className="mx-auto max-w-md space-y-5 text-center">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 p-4">
-              <p className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
-                {mode === "1p" ? "Tú" : "Jugador 1"}
-              </p>
-              <p className="mt-2 text-5xl">
-                {CHOICES.find((c) => c.id === p1Choice)?.emoji}
-              </p>
-              <p className="mt-1 text-sm font-bold">
-                {CHOICES.find((c) => c.id === p1Choice)?.label}
-              </p>
+      {/* Swiss Tabular Scoreboard */}
+      <div className="border border-on-surface bg-surface-container-lowest">
+        <div className="grid grid-cols-3 divide-x divide-on-surface text-left">
+          <div className="p-4 bg-surface border-b-2 border-primary">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-primary">
+                {mode === "1p" ? "Player 01" : "Jugador 1"}
+              </span>
+              <span className="w-2 h-2 bg-primary" />
             </div>
-            <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 p-4">
-              <p className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
-                {mode === "1p" ? "IA" : "Jugador 2"}
-              </p>
-              <p className="mt-2 text-5xl">
-                {CHOICES.find((c) => c.id === p2Choice)?.emoji}
-              </p>
-              <p className="mt-1 text-sm font-bold">
-                {CHOICES.find((c) => c.id === p2Choice)?.label}
-              </p>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {scores.p1}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline">
+                / {TARGET_WINS}
+              </span>
             </div>
           </div>
 
-          <p className="text-base font-bold">
-            {matchWinner ? (
-              <span className="text-emerald-600 dark:text-emerald-400">
-                🏆 ¡
-                {matchWinner === 1
-                  ? mode === "1p"
-                    ? "Ganaste la partida"
-                    : "Jugador 1 ganó la partida"
-                  : mode === "1p"
-                  ? "La IA ganó la partida"
-                  : "Jugador 2 ganó la partida"}
-                !
+          <div className="p-4 bg-surface-container-low">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-outline">
+                Tablas
               </span>
-            ) : roundResult === 0 ? (
-              <span className="text-amber-600 dark:text-amber-400">
-                ¡Empate en esta ronda!
+              <span className="text-xs font-mono text-outline">=</span>
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {scores.draws}
               </span>
-            ) : roundResult === 1 ? (
-              <span className="text-indigo-600 dark:text-indigo-400">
-                Punto para {mode === "1p" ? "ti" : "Jugador 1"}
+              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
+                Rondas
               </span>
-            ) : (
-              <span className="text-rose-600 dark:text-rose-400">
-                Punto para {mode === "1p" ? "la IA" : "Jugador 2"}
-              </span>
-            )}
-          </p>
+            </div>
+          </div>
 
-          {!matchWinner && (
+          <div className="p-4 bg-surface border-b-2 border-on-surface">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-on-surface">
+                {mode === "1p" ? "AI Táctica" : "Jugador 2"}
+              </span>
+              <span className="w-2 h-2 bg-on-surface" />
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {scores.p2}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline">
+                / {TARGET_WINS}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Status Bar */}
+        <div className="p-3 bg-surface-container border-t border-on-surface flex items-center justify-between font-mono text-xs uppercase">
+          <div className="flex items-center gap-2">
+            <span className="inline-block w-2.5 h-2.5 bg-primary animate-pulse" />
+            <span className="font-bold tracking-wide">
+              {matchWinner
+                ? `SERIE FINALIZADA: VICTORIA ${
+                    matchWinner === 1
+                      ? "JUGADOR 1"
+                      : mode === "1p"
+                      ? "IA TÁCTICA"
+                      : "JUGADOR 2"
+                  }`
+                : mode === "remote" && status !== "connected"
+                ? "STATUS: ESPERANDO CONEXIÓN EN SALA REMOTA"
+                : mode === "remote" && myRemotePicked
+                ? opponentRemotePicked
+                  ? "STATUS: REVELANDO JUGADAS..."
+                  : "STATUS: JUGADA SELLADA — ESPERANDO RIVAL..."
+                : mode === "local"
+                ? `TURNO OCULTO: ${
+                    localPhase === "p1" ? "JUGADOR 1" : "JUGADOR 2"
+                  }`
+                : "PROTOCOLO CIEGO: SELECCIONA TU JUGADA"}
+            </span>
+          </div>
+          <span className="text-[10px] tracking-widest text-outline hidden sm:inline">
+            SERIE BO5
+          </span>
+        </div>
+      </div>
+
+      {/* Main Arena */}
+      <div className="border border-on-surface bg-surface-container-lowest p-6 sm:p-10">
+        {mode === "local" && localPhase === "handoff" ? (
+          <div className="mx-auto max-w-sm border-2 border-on-surface bg-surface-container-low p-6 text-center space-y-4">
+            <span className="inline-block font-mono text-[10px] uppercase px-2 py-0.5 bg-primary text-white font-bold">
+              PANTALLA DE BLOQUEO
+            </span>
+            <p className="text-base font-grotesk font-bold uppercase">
+              Jugador 1 ya selló su jugada
+            </p>
+            <p className="text-xs font-mono text-outline">
+              Pasa el dispositivo al Jugador 2 para que elija en secreto.
+            </p>
             <button
               type="button"
-              onClick={nextRound}
-              className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 transition-colors cursor-pointer"
+              onClick={() => setLocalPhase("p2")}
+              className="w-full py-3 bg-on-surface text-surface-container-lowest hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
             >
-              Siguiente Ronda
+              LISTO, SOY JUGADOR 2
             </button>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-5 text-center">
-          <p className="text-sm font-semibold">
-            {mode === "remote" && status !== "connected"
-              ? "Conecta con tu rival en una sala para empezar"
-              : mode === "remote" && myRemotePicked
-              ? opponentRemotePicked
-                ? "Revelando..."
-                : "Ya elegiste. Esperando al rival..."
-              : mode === "local"
-              ? `Turno de ${localPhase === "p1" ? "Jugador 1" : "Jugador 2"}: elige en secreto`
-              : "Elige tu jugada"}
-          </p>
+          </div>
+        ) : showReveal && p1Choice && p2Choice ? (
+          <div className="mx-auto max-w-md space-y-6 text-center">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="border-2 border-primary bg-surface p-5">
+                <p className="font-mono text-[11px] font-bold uppercase text-primary">
+                  {mode === "1p" ? "PLAYER 01" : "JUGADOR 1"}
+                </p>
+                <p className="mt-3 text-5xl">
+                  {CHOICES.find((c) => c.id === p1Choice)?.emoji}
+                </p>
+                <p className="mt-2 font-mono text-sm font-bold uppercase">
+                  {CHOICES.find((c) => c.id === p1Choice)?.label}
+                </p>
+              </div>
+              <div className="border-2 border-on-surface bg-surface p-5">
+                <p className="font-mono text-[11px] font-bold uppercase text-on-surface">
+                  {mode === "1p" ? "AI TÁCTICA" : "JUGADOR 2"}
+                </p>
+                <p className="mt-3 text-5xl">
+                  {CHOICES.find((c) => c.id === p2Choice)?.emoji}
+                </p>
+                <p className="mt-2 font-mono text-sm font-bold uppercase">
+                  {CHOICES.find((c) => c.id === p2Choice)?.label}
+                </p>
+              </div>
+            </div>
 
-          <div className="mx-auto grid max-w-md grid-cols-3 gap-3">
+            <div className="p-3 border border-on-surface bg-surface-container-low font-mono text-xs font-bold uppercase">
+              {matchWinner
+                ? `🏆 SERIE GANADA POR ${
+                    matchWinner === 1
+                      ? mode === "1p"
+                        ? "JUGADOR 1"
+                        : "JUGADOR 1"
+                      : mode === "1p"
+                      ? "LA IA"
+                      : "JUGADOR 2"
+                  }`
+                : roundResult === 0
+                ? "EMPATE EN ESTA RONDA"
+                : roundResult === 1
+                ? `PUNTO PARA ${mode === "1p" ? "PLAYER 01" : "JUGADOR 1"}`
+                : `PUNTO PARA ${mode === "1p" ? "LA IA" : "JUGADOR 2"}`}
+            </div>
+
+            {!matchWinner && (
+              <button
+                type="button"
+                onClick={nextRound}
+                className="bg-on-surface text-surface-container-lowest hover:bg-primary hover:text-white px-6 py-3 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                SIGUIENTE RONDA →
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="mx-auto max-w-md grid grid-cols-3 gap-4">
             {CHOICES.map((c) => (
               <button
                 key={c.id}
@@ -343,32 +385,35 @@ export function RockPaperScissorsGame() {
                     (status !== "connected" || myRemotePicked)) ||
                   Boolean(matchWinner)
                 }
-                className="flex flex-col items-center justify-center rounded-2xl border-2 border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 p-4 hover:border-indigo-500 hover:bg-indigo-50/40 dark:hover:bg-indigo-950/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group border-2 border-on-surface bg-surface hover:bg-on-surface hover:text-surface-container-lowest p-4 flex flex-col items-center justify-between gap-3 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
+                <span className="self-start font-mono text-[10px] font-bold text-primary group-hover:text-white">
+                  [{c.code}]
+                </span>
                 <span className="text-4xl sm:text-5xl">{c.emoji}</span>
-                <span className="mt-2 text-xs sm:text-sm font-bold">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider">
                   {c.label}
                 </span>
               </button>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {matchWinner && (
-        <div className="mt-6 space-y-4 border-t border-slate-200 dark:border-zinc-800 pt-5">
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={resetMatch}
-              className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 transition-colors cursor-pointer"
-            >
-              Jugar Revancha
-            </button>
+        {matchWinner && (
+          <div className="mt-6 space-y-4 border-t border-on-surface/20 pt-5">
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={resetMatch}
+                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-on-surface"
+              >
+                + JUGAR REVANCHA
+              </button>
+            </div>
+            <AdSlot format="interstitial" label="Anuncio Post-Partida" />
           </div>
-          <AdSlot format="interstitial" label="Anuncio Post-Partida" />
-        </div>
-      )}
+        )}
+      </div>
     </GameShell>
   );
 }

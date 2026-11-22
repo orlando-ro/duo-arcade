@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { GameMode } from "./games";
 
-function generateRoomCode(): string {
+export function generateRoomCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
   for (let i = 0; i < 6; i++) {
@@ -16,10 +16,18 @@ function generateRoomCode(): string {
 export function useRoomState() {
   const searchParams = useSearchParams();
   const initialSala = searchParams.get("sala")?.trim().toUpperCase() ?? "";
+  const initialModo = searchParams.get("modo")?.trim().toLowerCase() ?? "";
+  const initialHost = searchParams.get("host") === "1";
 
-  const [mode, setMode] = useState<GameMode>(initialSala ? "remote" : "1p");
+  const resolvedMode: GameMode = initialSala
+    ? "remote"
+    : initialModo === "local" || initialModo === "remote" || initialModo === "1p"
+    ? (initialModo as GameMode)
+    : "1p";
+
+  const [mode, setMode] = useState<GameMode>(resolvedMode);
   const [roomCode, setRoomCode] = useState(initialSala);
-  const [isHost, setIsHost] = useState(!initialSala);
+  const [isHost, setIsHost] = useState(initialSala ? initialHost : true);
 
   const createRoom = useCallback(() => {
     const code = generateRoomCode();
@@ -29,6 +37,7 @@ export function useRoomState() {
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("sala", code);
+      url.searchParams.delete("host");
       window.history.replaceState({}, "", url.toString());
     }
   }, []);
@@ -42,6 +51,7 @@ export function useRoomState() {
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("sala", clean);
+      url.searchParams.delete("host");
       window.history.replaceState({}, "", url.toString());
     }
   }, []);
@@ -52,6 +62,7 @@ export function useRoomState() {
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.delete("sala");
+      url.searchParams.delete("host");
       window.history.replaceState({}, "", url.toString());
     }
   }, []);

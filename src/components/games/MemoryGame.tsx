@@ -7,7 +7,7 @@ import { useRoomState } from "@/lib/useRoomState";
 import { GameShell } from "@/components/GameShell";
 import { AdSlot } from "@/components/AdSlot";
 
-const SYMBOLS = ["🚀", "🎮", "⚡", "🔥", "💎", "🎯", "🌟", "🎲"];
+const SYMBOLS = ["★", "◆", "▲", "●", "✚", "✖", "■", "◈"];
 
 function hashCodeToSeed(str: string): number {
   let h = 2166136261;
@@ -159,7 +159,6 @@ export function MemoryGame() {
       let chosen = available[0];
 
       if (flipped.length === 0) {
-        // Check if AI knows any matching pair in memory
         let foundPairFirst = -1;
         for (const a of available) {
           const symA = memoryRef.current.get(a);
@@ -261,138 +260,167 @@ export function MemoryGame() {
       onLeaveRoom={leaveRoom}
       onReset={() => resetBoard()}
     >
-      {/* Scoreboard */}
-      <div className="mb-5 grid grid-cols-3 gap-2 text-center">
-        <div
-          className={`rounded-xl border p-2.5 transition-colors ${
-            !allMatched && turn === 1
-              ? "border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40"
-              : "border-slate-200 dark:border-zinc-800"
-          }`}
-        >
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            {mode === "1p" ? "Tú" : "Jugador 1"} ({matchWins.p1}v)
-          </p>
-          <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-            {scores.p1} pares
-          </p>
+      {/* Swiss Tabular Scoreboard */}
+      <div className="border border-on-surface bg-surface-container-lowest">
+        <div className="grid grid-cols-3 divide-x divide-on-surface text-left">
+          <div
+            className={`p-4 bg-surface transition-all border-b-2 ${
+              !allMatched && turn === 1
+                ? "border-primary opacity-100"
+                : "border-transparent opacity-60"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-primary">
+                {mode === "1p" ? "Player 01" : "Jugador 1"} ({matchWins.p1}V)
+              </span>
+              <span className="w-2 h-2 bg-primary" />
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {scores.p1}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
+                Pares
+              </span>
+            </div>
+          </div>
+
+          <div className="p-4 bg-surface-container-low">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-outline">
+                Restantes
+              </span>
+              <span className="text-xs font-mono text-outline">#</span>
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {8 - (scores.p1 + scores.p2)}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
+                Pares
+              </span>
+            </div>
+          </div>
+
+          <div
+            className={`p-4 bg-surface transition-all border-b-2 ${
+              !allMatched && turn === 2
+                ? "border-on-surface opacity-100"
+                : "border-transparent opacity-60"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-on-surface">
+                {mode === "1p" ? "AI Táctica" : "Jugador 2"} ({matchWins.p2}V)
+              </span>
+              <span className="w-2 h-2 bg-on-surface" />
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {scores.p2}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
+                Pares
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 dark:border-zinc-800 p-2.5">
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            Restantes
-          </p>
-          <p className="text-xl font-bold text-slate-700 dark:text-zinc-200">
-            {8 - (scores.p1 + scores.p2)}
-          </p>
-        </div>
-
-        <div
-          className={`rounded-xl border p-2.5 transition-colors ${
-            !allMatched && turn === 2
-              ? "border-amber-500 bg-amber-50/70 dark:bg-amber-950/40"
-              : "border-slate-200 dark:border-zinc-800"
-          }`}
-        >
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            {mode === "1p" ? "IA" : "Jugador 2"} ({matchWins.p2}v)
-          </p>
-          <p className="text-xl font-bold text-amber-600 dark:text-amber-400">
-            {scores.p2} pares
-          </p>
+        {/* Turn Status Bar */}
+        <div className="p-3 bg-surface-container border-t border-on-surface flex items-center justify-between font-mono text-xs uppercase">
+          <div className="flex items-center gap-2">
+            <span
+              className={`inline-block w-2.5 h-2.5 ${
+                allMatched
+                  ? "bg-primary"
+                  : turn === 1
+                  ? "bg-primary animate-pulse"
+                  : "bg-on-surface animate-pulse"
+              }`}
+            />
+            <span className="font-bold tracking-wide">
+              {allMatched
+                ? scores.p1 > scores.p2
+                  ? `STATUS: VICTORIA JUGADOR 1 (${scores.p1}-${scores.p2})`
+                  : scores.p2 > scores.p1
+                  ? `STATUS: VICTORIA ${
+                      mode === "1p" ? "IA TÁCTICA" : "JUGADOR 2"
+                    } (${scores.p2}-${scores.p1})`
+                  : "STATUS: EMPATE EXACTO (4-4)"
+                : mode === "remote" && status !== "connected"
+                ? "STATUS: ESPERANDO CONEXIÓN EN SALA REMOTA"
+                : mode === "remote"
+                ? turn === myPlayer
+                  ? "TURNO: VOLTEA 2 MÓDULOS (+1 TURNO SI ACIERTAS)"
+                  : "TURNO: ESPERANDO RIVAL..."
+                : `TURNO: ${
+                    turn === 1
+                      ? "JUGADOR 1"
+                      : mode === "1p"
+                      ? "IA TÁCTICA"
+                      : "JUGADOR 2"
+                  } (+1 EXTRA TURN)`}
+            </span>
+          </div>
+          <span className="text-[10px] tracking-widest text-outline hidden sm:inline">
+            MATRIZ 4×4
+          </span>
         </div>
       </div>
 
-      {/* Turn indicator */}
-      <div className="mb-4 text-center text-sm font-semibold">
-        {allMatched ? (
-          scores.p1 > scores.p2 ? (
-            <span className="text-emerald-600 dark:text-emerald-400">
-              ¡Ganó {mode === "1p" ? "Tú" : "Jugador 1"} ({scores.p1} a{" "}
-              {scores.p2})!
-            </span>
-          ) : scores.p2 > scores.p1 ? (
-            <span className="text-emerald-600 dark:text-emerald-400">
-              ¡Ganó {mode === "1p" ? "la IA" : "Jugador 2"} ({scores.p2} a{" "}
-              {scores.p1})!
-            </span>
-          ) : (
-            <span className="text-amber-600 dark:text-amber-400">
-              ¡Empate a 4 pares!
-            </span>
-          )
-        ) : mode === "remote" && status !== "connected" ? (
-          <span className="text-slate-500 dark:text-zinc-400">
-            Conecta con tu amigo en una sala para empezar
-          </span>
-        ) : mode === "remote" ? (
-          <span>
-            {turn === myPlayer
-              ? "Tu turno — voltea 2 cartas"
-              : "Turno del rival..."}
-          </span>
-        ) : (
-          <span>
-            Turno de:{" "}
-            <strong>
-              {turn === 1
-                ? mode === "1p"
-                  ? "Tú"
-                  : "Jugador 1"
-                : mode === "1p"
-                ? "IA"
-                : "Jugador 2"}
-            </strong>{" "}
-            (si aciertas, repites turno)
-          </span>
+      {/* 4x4 Swiss Cards Grid */}
+      <div className="border border-on-surface bg-surface-container-lowest p-6 sm:p-10 flex flex-col items-center justify-center">
+        <div className="w-full max-w-[380px] grid grid-cols-4 gap-2.5">
+          {deck.map((symbol, idx) => {
+            const isOpen = matched[idx] || flipped.includes(idx);
+            const codeLabel = String(idx + 1).padStart(2, "0");
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleCardClick(idx)}
+                disabled={isOpen || locked || allMatched}
+                aria-label={`Carta ${idx + 1}${isOpen ? `: ${symbol}` : ""}`}
+                className={`aspect-square border-2 flex flex-col items-center justify-between p-2 font-mono transition-all cursor-pointer disabled:cursor-default ${
+                  matched[idx]
+                    ? "border-primary bg-primary text-white"
+                    : isOpen
+                    ? "border-on-surface bg-on-surface text-surface-container-lowest"
+                    : "border-on-surface/40 bg-surface hover:border-on-surface hover:bg-surface-container"
+                }`}
+              >
+                <span className="self-start text-[9px] opacity-60">
+                  {codeLabel}
+                </span>
+                {isOpen ? (
+                  <span className="text-2xl sm:text-3xl font-bold leading-none">
+                    {symbol}
+                  </span>
+                ) : (
+                  <span className="text-sm font-bold text-outline">#</span>
+                )}
+                <span className="self-end text-[8px] opacity-40">+</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {allMatched && (
+          <div className="w-full mt-6 space-y-4 border-t border-on-surface/20 pt-5">
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={() => resetBoard()}
+                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-on-surface"
+              >
+                + JUGAR REVANCHA
+              </button>
+            </div>
+            <AdSlot format="interstitial" label="Anuncio Post-Partida" />
+          </div>
         )}
       </div>
-
-      {/* 4x4 Cards Grid */}
-      <div className="mx-auto grid max-w-[360px] grid-cols-4 gap-2.5">
-        {deck.map((symbol, idx) => {
-          const isOpen = matched[idx] || flipped.includes(idx);
-          return (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleCardClick(idx)}
-              disabled={isOpen || locked || allMatched}
-              aria-label={`Carta ${idx + 1}${isOpen ? `: ${symbol}` : ""}`}
-              className={`flex aspect-square items-center justify-center rounded-2xl border-2 text-3xl transition-all cursor-pointer disabled:cursor-default ${
-                matched[idx]
-                  ? "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40"
-                  : isOpen
-                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/50 scale-[1.03]"
-                  : "border-slate-200 dark:border-zinc-800 bg-slate-100 dark:bg-zinc-950/80 hover:border-indigo-400"
-              }`}
-            >
-              {isOpen ? (
-                <span>{symbol}</span>
-              ) : (
-                <span className="text-base font-bold text-slate-400 dark:text-zinc-600">
-                  ?
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {allMatched && (
-        <div className="mt-6 space-y-4 border-t border-slate-200 dark:border-zinc-800 pt-5">
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={() => resetBoard()}
-              className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 transition-colors cursor-pointer"
-            >
-              Jugar Revancha
-            </button>
-          </div>
-          <AdSlot format="interstitial" label="Anuncio Post-Partida" />
-        </div>
-      )}
     </GameShell>
   );
 }

@@ -202,178 +202,213 @@ export function DotsAndBoxesGame() {
       onLeaveRoom={leaveRoom}
       onReset={resetGame}
     >
-      {/* Scoreboard */}
-      <div className="mb-5 grid grid-cols-3 gap-2 text-center">
-        <div
-          className={`rounded-xl border p-2.5 ${
-            !gameOver && turn === 1
-              ? "border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40"
-              : "border-slate-200 dark:border-zinc-800"
-          }`}
-        >
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            {mode === "1p" ? "Tú (Azul)" : "Jugador 1 (Azul)"}
-          </p>
-          <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-            {p1Score} cajas
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 dark:border-zinc-800 p-2.5">
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            Libres
-          </p>
-          <p className="text-xl font-bold text-slate-700 dark:text-zinc-200">
-            {totalBoxes - (p1Score + p2Score)}
-          </p>
-        </div>
-
-        <div
-          className={`rounded-xl border p-2.5 ${
-            !gameOver && turn === 2
-              ? "border-rose-500 bg-rose-50/70 dark:bg-rose-950/40"
-              : "border-slate-200 dark:border-zinc-800"
-          }`}
-        >
-          <p className="text-[11px] font-semibold uppercase text-slate-500 dark:text-zinc-400">
-            {mode === "1p" ? "IA (Rojo)" : "Jugador 2 (Rojo)"}
-          </p>
-          <p className="text-xl font-bold text-rose-600 dark:text-rose-400">
-            {p2Score} cajas
-          </p>
-        </div>
-      </div>
-
-      {/* Turn indicator */}
-      <div className="mb-5 text-center text-sm font-semibold">
-        {gameOver ? (
-          <span className="text-emerald-600 dark:text-emerald-400">
-            ¡Ganó{" "}
-            {p1Score > p2Score
-              ? mode === "1p"
-                ? "Tú"
-                : "Jugador 1"
-              : mode === "1p"
-              ? "la IA"
-              : "Jugador 2"}{" "}
-            ({Math.max(p1Score, p2Score)} a {Math.min(p1Score, p2Score)})!
-          </span>
-        ) : mode === "remote" && status !== "connected" ? (
-          <span className="text-slate-500 dark:text-zinc-400">
-            Conecta con tu rival en una sala para empezar
-          </span>
-        ) : mode === "remote" ? (
-          <span>
-            {turn === myPlayer
-              ? "Tu turno — traza una línea entre dos puntos"
-              : "Turno del rival..."}
-          </span>
-        ) : (
-          <span>
-            Turno de:{" "}
-            <strong>
-              {turn === 1
-                ? mode === "1p"
-                  ? "Tú (Azul)"
-                  : "Jugador 1 (Azul)"
-                : mode === "1p"
-                ? "IA (Rojo)"
-                : "Jugador 2 (Rojo)"}
-            </strong>
-          </span>
-        )}
-      </div>
-
-      {/* Dots & Boxes Grid */}
-      <div className="mx-auto flex max-w-[320px] flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 p-6">
-        {Array.from({ length: BOX_SIZE + 1 }, (_, r) => (
-          <div key={r} className="w-full">
-            {/* Horizontal row of dots and horizontal edges */}
+      {/* Swiss Tabular Scoreboard */}
+      <div className="border border-on-surface bg-surface-container-lowest">
+        <div className="grid grid-cols-3 divide-x divide-on-surface text-left">
+          <div
+            className={`p-4 bg-surface transition-all border-b-2 ${
+              !gameOver && turn === 1
+                ? "border-primary opacity-100"
+                : "border-transparent opacity-60"
+            }`}
+          >
             <div className="flex items-center justify-between">
-              {Array.from({ length: BOX_SIZE + 1 }, (__, c) => (
-                <div key={c} className="flex flex-1 items-center last:flex-none">
-                  <div className="h-4 w-4 shrink-0 rounded-full bg-slate-800 dark:bg-zinc-200" />
-                  {c < BOX_SIZE && (
-                    <button
-                      type="button"
-                      onClick={() => handleEdgeClick(`h-${r}-${c}`)}
-                      disabled={Boolean(edges[`h-${r}-${c}`]) || gameOver}
-                      aria-label={`Línea horizontal ${r + 1},${c + 1}`}
-                      className={`mx-1 h-3 flex-1 rounded-full transition-all cursor-pointer disabled:cursor-default ${
-                        edges[`h-${r}-${c}`] === 1
-                          ? "bg-indigo-600"
-                          : edges[`h-${r}-${c}`] === 2
-                          ? "bg-rose-500"
-                          : "bg-slate-200 dark:bg-zinc-800 hover:bg-indigo-300 dark:hover:bg-indigo-800"
-                      }`}
-                    />
-                  )}
-                </div>
-              ))}
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-primary">
+                {mode === "1p" ? "Player 01 [J1]" : "Jugador 1 [J1]"}
+              </span>
+              <span className="w-2 h-2 bg-primary" />
             </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {p1Score}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
+                Cajas
+              </span>
+            </div>
+          </div>
 
-            {/* Vertical edges and boxes row */}
-            {r < BOX_SIZE && (
-              <div className="my-1 flex h-16 items-stretch justify-between">
+          <div className="p-4 bg-surface-container-low">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-outline">
+                Libres
+              </span>
+              <span className="text-xs font-mono text-outline">□</span>
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {totalBoxes - (p1Score + p2Score)}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
+                Módulos
+              </span>
+            </div>
+          </div>
+
+          <div
+            className={`p-4 bg-surface transition-all border-b-2 ${
+              !gameOver && turn === 2
+                ? "border-on-surface opacity-100"
+                : "border-transparent opacity-60"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-on-surface">
+                {mode === "1p" ? "AI Táctica [IA]" : "Jugador 2 [J2]"}
+              </span>
+              <span className="w-2 h-2 bg-on-surface" />
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight text-on-surface">
+                {p2Score}
+              </span>
+              <span className="text-[11px] font-mono uppercase text-outline hidden sm:inline">
+                Cajas
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Turn Status Bar */}
+        <div className="p-3 bg-surface-container border-t border-on-surface flex items-center justify-between font-mono text-xs uppercase">
+          <div className="flex items-center gap-2">
+            <span
+              className={`inline-block w-2.5 h-2.5 ${
+                gameOver
+                  ? "bg-primary"
+                  : turn === 1
+                  ? "bg-primary animate-pulse"
+                  : "bg-on-surface animate-pulse"
+              }`}
+            />
+            <span className="font-bold tracking-wide">
+              {gameOver
+                ? `STATUS: VICTORIA ${
+                    p1Score > p2Score
+                      ? "JUGADOR 1 [J1]"
+                      : mode === "1p"
+                      ? "IA TÁCTICA [IA]"
+                      : "JUGADOR 2 [J2]"
+                  } (${Math.max(p1Score, p2Score)}-${Math.min(
+                    p1Score,
+                    p2Score
+                  )})`
+                : mode === "remote" && status !== "connected"
+                ? "STATUS: ESPERANDO CONEXIÓN EN SALA REMOTA"
+                : mode === "remote"
+                ? turn === myPlayer
+                  ? "TURNO: TRAZA UN VECTOR ENTRE DOS NODOS"
+                  : "TURNO: ESPERANDO RIVAL..."
+                : `TURNO: ${
+                    turn === 1
+                      ? "JUGADOR 1 [J1]"
+                      : mode === "1p"
+                      ? "IA TÁCTICA [IA]"
+                      : "JUGADOR 2 [J2]"
+                  }`}
+            </span>
+          </div>
+          <span className="text-[10px] tracking-widest text-outline hidden sm:inline">
+            TOPOLOGÍA 9C
+          </span>
+        </div>
+      </div>
+
+      {/* Dots & Boxes Swiss Grid */}
+      <div className="border border-on-surface bg-surface-container-lowest p-6 sm:p-10 flex flex-col items-center justify-center">
+        <div className="w-full max-w-[340px] border-2 border-on-surface bg-surface p-6">
+          {Array.from({ length: BOX_SIZE + 1 }, (_, r) => (
+            <div key={r} className="w-full">
+              {/* Horizontal row of square nodes and horizontal vectors */}
+              <div className="flex items-center justify-between">
                 {Array.from({ length: BOX_SIZE + 1 }, (__, c) => (
                   <div
                     key={c}
                     className="flex flex-1 items-center last:flex-none"
                   >
-                    <button
-                      type="button"
-                      onClick={() => handleEdgeClick(`v-${r}-${c}`)}
-                      disabled={Boolean(edges[`v-${r}-${c}`]) || gameOver}
-                      aria-label={`Línea vertical ${r + 1},${c + 1}`}
-                      className={`mx-0.5 h-full w-3 shrink-0 rounded-full transition-all cursor-pointer disabled:cursor-default ${
-                        edges[`v-${r}-${c}`] === 1
-                          ? "bg-indigo-600"
-                          : edges[`v-${r}-${c}`] === 2
-                          ? "bg-rose-500"
-                          : "bg-slate-200 dark:bg-zinc-800 hover:bg-indigo-300 dark:hover:bg-indigo-800"
-                      }`}
-                    />
+                    <div className="h-3.5 w-3.5 shrink-0 bg-on-surface" />
                     {c < BOX_SIZE && (
-                      <div
-                        className={`mx-1 flex h-full flex-1 items-center justify-center rounded-xl text-sm font-black transition-colors ${
-                          boxes[`${r}-${c}`] === 1
-                            ? "bg-indigo-100 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300"
-                            : boxes[`${r}-${c}`] === 2
-                            ? "bg-rose-100 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300"
-                            : "bg-transparent"
+                      <button
+                        type="button"
+                        onClick={() => handleEdgeClick(`h-${r}-${c}`)}
+                        disabled={Boolean(edges[`h-${r}-${c}`]) || gameOver}
+                        aria-label={`Línea horizontal ${r + 1},${c + 1}`}
+                        className={`mx-1 h-2.5 flex-1 transition-all cursor-pointer disabled:cursor-default ${
+                          edges[`h-${r}-${c}`] === 1
+                            ? "bg-primary"
+                            : edges[`h-${r}-${c}`] === 2
+                            ? "bg-on-surface"
+                            : "bg-surface-container-highest hover:bg-primary/40"
                         }`}
-                      >
-                        {boxes[`${r}-${c}`] === 1
-                          ? "J1"
-                          : boxes[`${r}-${c}`] === 2
-                          ? mode === "1p"
-                            ? "IA"
-                            : "J2"
-                          : ""}
-                      </div>
+                      />
                     )}
                   </div>
                 ))}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
 
-      {gameOver && (
-        <div className="mt-6 space-y-4 border-t border-slate-200 dark:border-zinc-800 pt-5">
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={resetGame}
-              className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 transition-colors cursor-pointer"
-            >
-              Jugar Revancha
-            </button>
-          </div>
-          <AdSlot format="interstitial" label="Anuncio Post-Partida" />
+              {/* Vertical vectors and boxes row */}
+              {r < BOX_SIZE && (
+                <div className="my-1 flex h-16 items-stretch justify-between">
+                  {Array.from({ length: BOX_SIZE + 1 }, (__, c) => (
+                    <div
+                      key={c}
+                      className="flex flex-1 items-center last:flex-none"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleEdgeClick(`v-${r}-${c}`)}
+                        disabled={Boolean(edges[`v-${r}-${c}`]) || gameOver}
+                        aria-label={`Línea vertical ${r + 1},${c + 1}`}
+                        className={`mx-0.5 h-full w-2.5 shrink-0 transition-all cursor-pointer disabled:cursor-default ${
+                          edges[`v-${r}-${c}`] === 1
+                            ? "bg-primary"
+                            : edges[`v-${r}-${c}`] === 2
+                            ? "bg-on-surface"
+                            : "bg-surface-container-highest hover:bg-primary/40"
+                        }`}
+                      />
+                      {c < BOX_SIZE && (
+                        <div
+                          className={`mx-1 flex h-full flex-1 items-center justify-center font-mono text-xs font-bold transition-colors ${
+                            boxes[`${r}-${c}`] === 1
+                              ? "bg-primary/15 border border-primary text-primary"
+                              : boxes[`${r}-${c}`] === 2
+                              ? "bg-on-surface text-surface-container-lowest"
+                              : "bg-transparent"
+                          }`}
+                        >
+                          {boxes[`${r}-${c}`] === 1
+                            ? "J1"
+                            : boxes[`${r}-${c}`] === 2
+                            ? mode === "1p"
+                              ? "IA"
+                              : "J2"
+                            : ""}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-      )}
+
+        {gameOver && (
+          <div className="w-full mt-6 space-y-4 border-t border-on-surface/20 pt-5">
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={resetGame}
+                className="bg-primary text-white hover:bg-on-surface px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-on-surface"
+              >
+                + JUGAR REVANCHA
+              </button>
+            </div>
+            <AdSlot format="interstitial" label="Anuncio Post-Partida" />
+          </div>
+        )}
+      </div>
     </GameShell>
   );
 }

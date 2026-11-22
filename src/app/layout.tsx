@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
-import { Gamepad2 } from "lucide-react";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "DuoArcade — Juegos rápidos de 1 o 2 jugadores",
+  title: "DUOARCADE — International Typographic Arcade (1P / 2P)",
   description:
-    "Juega gratis en un solo dispositivo o en línea con tus amigos. Gato, Conecta 4, Piedra Papel o Tijera sin registros ni descargas.",
+    "Juega gratis en un solo dispositivo o en línea con tus amigos. Gato, Conecta 4, Piedra Papel o Tijera, Memoria y Puntos y Cajas sin registros ni descargas.",
 };
 
 export default function RootLayout({
@@ -29,12 +17,19 @@ export default function RootLayout({
   const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
   return (
-    <html
-      lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="es" className="h-full antialiased">
       <head>
         <meta name="color-scheme" content="light dark" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         {adsenseClient ? (
           <>
             <meta name="google-adsense-account" content={adsenseClient} />
@@ -46,56 +41,156 @@ export default function RootLayout({
           </>
         ) : null}
       </head>
-      <body className="min-h-full flex flex-col">
-        <header className="sticky top-0 z-30 border-b border-slate-200 dark:border-zinc-800 bg-white/85 dark:bg-zinc-950/85 backdrop-blur-md">
-          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-            <Link
-              href="/"
-              className="flex items-center gap-2 font-bold tracking-tight text-lg text-slate-900 dark:text-zinc-100"
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
-                <Gamepad2 className="h-5 w-5" />
-              </span>
-              <span>DuoArcade</span>
-            </Link>
-            <nav className="flex items-center gap-4 text-sm font-medium text-slate-600 dark:text-zinc-400">
+      <body className="min-h-full flex flex-col bg-background font-inter text-on-surface selection:bg-primary selection:text-white border-t-4 border-primary">
+        {/* HEADER: International Typographic Minimalist Navigation */}
+        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-on-surface/20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between h-16 sm:h-20">
+            {/* Brand Wordmark */}
+            <div className="flex items-center gap-3">
               <Link
                 href="/"
-                className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="flex items-center gap-2.5 group"
               >
-                Juegos
+                <span className="w-6 h-6 bg-primary flex items-center justify-center font-grotesk font-bold text-white text-sm leading-none select-none">
+                  +
+                </span>
+                <span className="font-grotesk font-bold text-xl sm:text-2xl tracking-tighter uppercase text-on-surface group-hover:text-primary transition-colors">
+                  DUOARCADE<span className="text-primary font-normal">®</span>
+                </span>
+              </Link>
+              <span className="hidden md:inline-block font-mono text-[10px] tracking-widest text-on-surface/50 border-l border-on-surface/20 pl-3 uppercase">
+                SYS.EDITION // CH-8001
+              </span>
+            </div>
+
+            {/* Stark Nav Links */}
+            <nav className="hidden md:flex items-center space-x-1 font-mono text-xs uppercase tracking-wider text-on-surface">
+              <Link
+                href="/"
+                className="px-4 py-2 font-semibold text-on-surface hover:text-primary border-b-2 border-transparent hover:border-primary transition-all"
+              >
+                01 / Juegos
+              </Link>
+              <Link
+                href="/salas"
+                className="px-4 py-2 font-semibold text-on-surface hover:text-primary border-b-2 border-transparent hover:border-primary transition-all"
+              >
+                02 / Sala Remota
+              </Link>
+              <Link
+                href="/#como-funciona"
+                className="px-4 py-2 text-on-surface/70 hover:text-on-surface border-b-2 border-transparent hover:border-on-surface/30 transition-all"
+              >
+                03 / Mecánicas
               </Link>
               <Link
                 href="/contacto"
-                className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="px-4 py-2 text-on-surface/70 hover:text-on-surface border-b-2 border-transparent hover:border-on-surface/30 transition-all"
               >
-                Acerca de
-              </Link>
-              <Link
-                href="/privacidad"
-                className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors hidden sm:inline"
-              >
-                Privacidad
+                04 / Manifiesto
               </Link>
             </nav>
+
+            {/* Minimal Control Actions */}
+            <div className="flex items-center gap-2 sm:gap-3 font-mono text-xs">
+              <Link
+                href="/salas"
+                className="inline-flex items-center gap-2 bg-on-surface text-surface-container-lowest px-3.5 py-2 sm:px-4 sm:py-2.5 font-mono text-xs font-semibold tracking-wider hover:bg-primary hover:text-white transition-colors uppercase border border-on-surface"
+              >
+                <span className="w-1.5 h-1.5 bg-primary" />
+                <span>+ Crear Sala</span>
+              </Link>
+            </div>
           </div>
         </header>
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 w-full">{children}</main>
 
-        <footer className="border-t border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 py-6 text-center text-xs text-slate-500 dark:text-zinc-400">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 sm:flex-row">
-            <p>© 2026 DuoArcade. Juega al instante.</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contacto" className="hover:underline">
-                Acerca de y Contacto
-              </Link>
-              <Link href="/privacidad" className="hover:underline">
-                Política de Privacidad
-              </Link>
-              <Link href="/terminos" className="hover:underline">
-                Términos de Uso
-              </Link>
+        {/* FOOTER: Pure Swiss Typography Grid */}
+        <footer className="w-full border-t-2 border-on-surface bg-surface-container-lowest mt-16 font-mono">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-14 space-y-8">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 pb-8 border-b border-on-surface/15">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 bg-primary flex items-center justify-center text-white text-[10px] font-bold">
+                    +
+                  </span>
+                  <span className="font-grotesk font-bold text-lg tracking-tight uppercase text-on-surface">
+                    DUOARCADE
+                  </span>
+                </div>
+                <p className="text-xs text-on-surface/60 max-w-sm font-inter leading-relaxed">
+                  Catálogo minimalista de juegos clásicos de estrategia para 1 o 2
+                  jugadores. Estética suiza racionalista y tipografía estricta.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-xs">
+                <div className="space-y-2">
+                  <span className="font-bold text-on-surface uppercase tracking-wider text-[11px] block">
+                    ÍNDICE
+                  </span>
+                  <div className="flex flex-col space-y-1.5 text-on-surface/70">
+                    <Link className="hover:text-primary transition-colors" href="/">
+                      Juegos (05)
+                    </Link>
+                    <Link className="hover:text-primary transition-colors" href="/salas">
+                      Salas P2P
+                    </Link>
+                    <Link
+                      className="hover:text-primary transition-colors"
+                      href="/#como-funciona"
+                    >
+                      Protocolo
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="font-bold text-on-surface uppercase tracking-wider text-[11px] block">
+                    LEGAL
+                  </span>
+                  <div className="flex flex-col space-y-1.5 text-on-surface/70">
+                    <Link
+                      className="hover:text-primary transition-colors"
+                      href="/contacto"
+                    >
+                      Acerca de y Contacto
+                    </Link>
+                    <Link
+                      className="hover:text-primary transition-colors"
+                      href="/privacidad"
+                    >
+                      Privacidad
+                    </Link>
+                    <Link
+                      className="hover:text-primary transition-colors"
+                      href="/terminos"
+                    >
+                      Términos
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="space-y-2 col-span-2 sm:col-span-1">
+                  <span className="font-bold text-on-surface uppercase tracking-wider text-[11px] block">
+                    ESTÁNDAR
+                  </span>
+                  <span className="text-[11px] text-on-surface/60 block leading-tight font-inter">
+                    DIN EN ISO 9241 / SWISS TYPOGRAPHIC GRID
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-on-surface/50">
+              <div>
+                © 2026 DUOARCADE ARCHIVE. JUEGA AL INSTANTE SIN REGISTROS.
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-primary" />
+                <span>SWISS INTERNATIONAL EDITION // REALTIME ENGINE</span>
+              </div>
             </div>
           </div>
         </footer>

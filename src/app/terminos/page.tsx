@@ -6,29 +6,46 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 space-y-5 text-sm leading-relaxed text-slate-700 dark:text-zinc-300">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-zinc-100">
-        Términos de Uso
-      </h1>
-      <p>
-        Al acceder y utilizar <strong>DuoArcade</strong>, aceptas usar los
-        juegos de manera responsable y únicamente con fines de entretenimiento.
-      </p>
-      <h2 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">
-        1. Disponibilidad del servicio
-      </h2>
-      <p>
-        Los juegos se ofrecen &ldquo;tal cual&rdquo;, de forma gratuita, sin
-        garantías de disponibilidad ininterrumpida.
-      </p>
-      <h2 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">
-        2. Publicidad
-      </h2>
-      <p>
-        Para mantener el servicio gratuito, el sitio incluye espacios
-        publicitarios. Está prohibido manipular clics o bloquear artificialmente
-        la medición de los mismos de manera fraudulenta.
-      </p>
+    <div className="mx-auto max-w-4xl px-4 sm:px-8 py-12">
+      <div className="border border-on-surface bg-surface-container-lowest divide-y divide-on-surface">
+        <div className="p-6 sm:p-8 bg-surface-container-low">
+          <span className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
+            {"// DOCUMENTO LEGAL 02"}
+          </span>
+          <h1 className="mt-2 text-2xl sm:text-4xl font-grotesk font-black uppercase tracking-tight text-on-surface">
+            Términos de Uso
+          </h1>
+        </div>
+
+        <div className="p-6 sm:p-8 space-y-6 text-sm leading-relaxed text-on-surface/85">
+          <p>
+            Al acceder y utilizar <strong>DuoArcade</strong>, aceptas usar los
+            juegos de manera responsable y únicamente con fines de
+            entretenimiento.
+          </p>
+
+          <div className="space-y-2">
+            <h2 className="text-base font-grotesk font-bold uppercase text-on-surface">
+              1. Disponibilidad del servicio
+            </h2>
+            <p>
+              Los juegos se ofrecen &ldquo;tal cual&rdquo;, de forma gratuita,
+              sin garantías de disponibilidad ininterrumpida.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-base font-grotesk font-bold uppercase text-on-surface">
+              2. Publicidad
+            </h2>
+            <p>
+              Para mantener el servicio gratuito, el sitio incluye espacios
+              publicitarios. Está prohibido manipular clics o bloquear
+              artificialmente la medición de los mismos de manera fraudulenta.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
